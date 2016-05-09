@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Icons/About.png</file>
+        <file>Icons/GitHub.png</file>
+        <file>Icons/HomePage.png</file>
+        <file>Icons/language.png</file>
+        <file>Icons/Option.png</file>
+        <file>Icons/Pause Download.png</file>
+        <file>Icons/Qt.png</file>
+        <file>Icons/Quit.png</file>
+        <file>Icons/SourceForge.png</file>
+        <file>Icons/Start Download.png</file>
+        <file>Icons/Big Icon.png</file>
+        <file>Icons/Small Icon.png</file>
+    </qresource>
+</RCC>
