@@ -24,7 +24,7 @@ public:
     //QString getFileSize() const;
 
 public slots:
-    void cancelDownload();
+    void cancellDownload();
 
 private slots:
     void error(QNetworkReply::NetworkError);
@@ -34,7 +34,7 @@ private slots:
     void fileDownloaded();
 
 private:
-    QNetworkAccessManager DownloadManager;
+    QNetworkAccessManager *DownloadManager;
     QNetworkReply *reply;
     QByteArray DownloadedData;
     qint64 DLTotal, DLRead;

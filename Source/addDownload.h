@@ -2,6 +2,7 @@
 #define ADDDOWNLOAD_H
 
 #include <downloader.h>
+#include "filesize.h"
 
 #include <QDialog>
 
@@ -18,7 +19,7 @@ public:
     ~addDownload();
 
 public slots:
-    std::tuple<QString, QString, bool> Return();
+    std::tuple<QString, QString, QString, bool> Return();
 
 private slots:
     void on_OKEditPushButton_clicked();
@@ -36,11 +37,13 @@ private slots:
 private:
     Ui::addDownload *ui;
 
-    QString DLUrl, DLFile;
+    QString DLUrl, DLFile, DLSize;
 
     bool startDownload, editUrl=true;
 
     Downloader *FileDownload;
+
+    FileSize *ADDLFS;
 
 };
 

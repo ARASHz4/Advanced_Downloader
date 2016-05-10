@@ -26,7 +26,7 @@ private:
 
     QList<QProgressBar *> downloadProgressBarList;
 
-    QStringList DownloadListUrl, DownloadListFile;
+    QStringList DownloadListUrl, DownloadListFile, DownloadListSize;
 
     int currentDownload;
 

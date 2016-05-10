@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2016-04-30T14:35:42
+# Project created by ARASHz4 2016-04-30T14:35:42
 #
 #-------------------------------------------------
 
@@ -20,27 +20,29 @@ mac: ICON = Mac/ADIcon.icns
 
 SOURCES += main.cpp\
         downloaderwindow.cpp \
-    addDownload.cpp \
     about.cpp \
     advanceddownloader.cpp \
     slsettings.cpp \
     option.cpp \
     downloader.cpp \
-    fileicon.cpp
+    fileicon.cpp \
+    filesize.cpp \
+    adddownload.cpp
 
 HEADERS  += downloaderwindow.h \
-    addDownload.h \
     about.h \
     advanceddownloader.h \
     slsettings.h \
     option.h \
     downloader.h \
-    fileicon.h
+    fileicon.h \
+    filesize.h \
+    adddownload.h
 
 FORMS    += downloaderwindow.ui \
-    addDownload.ui \
     about.ui \
-    option.ui
+    option.ui \
+    adddownload.ui
 
 RESOURCES += \
     icon.qrc \

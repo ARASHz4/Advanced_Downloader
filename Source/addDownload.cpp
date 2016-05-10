@@ -1,4 +1,4 @@
-#include "addDownload.h"
+#include "adddownload.h"
 #include "ui_addDownload.h"
 #include "downloader.h"
 #include "downloaderwindow.h"
@@ -47,20 +47,22 @@ void addDownload::on_OKEditPushButton_clicked()
 
             ui->fileIconLabel->setPixmap(QPixmap(Icon->getPixmap()));
 
-//            QUrl Url;
+            QUrl Url;
 
-//            if(!ui->addressLineEdit->text().contains("http://"))
-//            {
-//                Url = "http://" + ui->addressLineEdit->text();
-//            }
-//            else
-//            {
-//                Url = ui->addressLineEdit->text();
-//            }
+            if(!ui->addressLineEdit->text().contains("http://"))
+            {
+                Url = "http://" + ui->addressLineEdit->text();
+            }
+            else
+            {
+                Url = ui->addressLineEdit->text();
+            }
 
-//            FileDownload = new Downloader(Url, this);
+            ADDLFS = new FileSize(Url, this);
 
-//            connect(FileDownload, SIGNAL (updatedProgress()), this, SLOT (SetSize()));
+            connect(ADDLFS, SIGNAL (completed()), this, SLOT (SetSize()));
+
+
         }
     }
     else
@@ -81,28 +83,9 @@ void addDownload::on_OKEditPushButton_clicked()
 
 void addDownload::SetSize()
 {
-    disconnect(FileDownload, SIGNAL (updatedProgress()), this, SLOT (SetSize()));
-
-    FileDownload->cancelDownload();
-
-    float num = FileDownload->getDLTotal();
-
-    QString FileSize;
-
-    QStringList list;
-    list << "KB" << "MB" << "GB" << "TB";
-
-    QStringListIterator i(list);
-    QString unit("bytes");
-
-    while(num >= 1024.0 && i.hasNext())
-    {
-        unit = i.next();
-        num /= 1024.0;
-    }
-    FileSize = QString().setNum(num,'f',2)+" "+unit;
-
-    ui->fileSizeLabel->setText(FileSize);
+    DLSize = ADDLFS->getFSize();
+    ADDLFS->deleteLater();
+    ui->fileSizeLabel->setText(DLSize);
 }
 
 void addDownload::on_addDlListStartPushButton_clicked()
@@ -129,9 +112,9 @@ void addDownload::on_addDlListPushButton_clicked()
     }
 }
 
-std::tuple<QString, QString, bool> addDownload::Return()
+std::tuple<QString, QString, QString, bool> addDownload::Return()
 {
-    return std::make_tuple(DLUrl, DLFile, startDownload);
+    return std::make_tuple(DLUrl, DLFile, DLSize, startDownload);
 }
 
 void addDownload::on_cancellPushButton_clicked()

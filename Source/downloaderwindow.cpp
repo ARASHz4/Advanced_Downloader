@@ -4,7 +4,7 @@
 #include "slsettings.h"
 #include "option.h"
 #include "about.h"
-#include "addDownload.h"
+#include "adddownload.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -109,20 +109,22 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
     addDownload ADD(this);
     ADD.exec();
 
-    QString DownloadUrl, DownloadFile;
+    QString DownloadUrl, DownloadFile, DownloadSize;
     bool startDownload;
 
-    std::tie(DownloadUrl, DownloadFile, startDownload) = ADD.Return();
+    std::tie(DownloadUrl, DownloadFile, DownloadSize, startDownload) = ADD.Return();
 
     if(!DownloadUrl.isEmpty() && !DownloadFile.isEmpty())
     {
         DownloadListUrl << DownloadUrl;
         DownloadListFile << DownloadFile;
+        DownloadListSize << DownloadSize;
 
         qDebug()<<DownloadUrl;
 
         QTreeWidgetItem *item = new QTreeWidgetItem();
         item->setText(0, QUrl(DownloadUrl).fileName());
+        item->setText(1, DownloadSize);
         ui->downloadTreeWidget->addTopLevelItem(item);
 
         QProgressBar *newPrProgressBar = new QProgressBar;
@@ -215,7 +217,7 @@ void DownloaderWindow::showDownloadError()
 
 void DownloaderWindow::on_actionStop_Download_triggered()
 {
-    FileDownload->cancelDownload();
+    FileDownload->cancellDownload();
 
     qDebug()<<ui->downloadTreeWidget->currentIndex().row();
 }
