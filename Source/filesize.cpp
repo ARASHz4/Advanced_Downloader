@@ -1,7 +1,5 @@
 #include "filesize.h"
 
-#include <QDebug>
-
 FileSize::FileSize(QUrl Url, QObject *parent) : QObject(parent)
 {
     FSDownloadManager = new QNetworkAccessManager(this);
@@ -30,13 +28,9 @@ void FileSize::readHeaders()
     FSize = QString().setNum(num,'f',2)+" "+unit;
 
     emit completed();
-
-    qDebug()<<"asdf"<<FSize;
 }
 
 QString FileSize::getFSize() const
 {
-    qDebug()<<"asdf"<<FSize;
-
     return FSize;
 }

@@ -1,11 +1,20 @@
 #ifndef DOWNLOADERWINDOW_H
 #define DOWNLOADERWINDOW_H
 
-#include <downloader.h>
+#include "downloader.h"
+#include "slsettings.h"
+#include "option.h"
+#include "about.h"
+#include "adddownload.h"
 
 #include <QMainWindow>
 #include <QProgressBar>
 #include <QTreeWidgetItem>
+#include <QFile>
+#include <QFileInfo>
+#include <QProgressBar>
+#include <QMessageBox>
+#include <QSystemTrayIcon>
 
 namespace Ui {
 class DownloaderWindow;
@@ -30,10 +39,14 @@ private:
 
     int currentDownload;
 
+    QSystemTrayIcon *tray;
+
 private slots:
     void Retranslate();
 
-    void closeEvent (QCloseEvent *);
+    void closeEvent (QCloseEvent *CloseEvant);
+
+    void RestoreWindow();
 
     void on_actionAdd_a_download_triggered();
 

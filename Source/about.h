@@ -1,7 +1,11 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
+#include "slsettings.h"
+
 #include <QDialog>
+#include <QMouseEvent>
+#include <QPixmap>
 
 namespace Ui {
 class About;

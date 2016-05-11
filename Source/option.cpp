@@ -1,7 +1,6 @@
 #include "option.h"
 #include "ui_option.h"
-#include "advanceddownloader.h"
-#include "slsettings.h"
+
 
 Option::Option(QWidget *parent) :
     QDialog(parent),
@@ -55,6 +54,8 @@ void Option::on_listWidgetOption_currentRowChanged(int currentRow)
     {
         ui->OptionGroupBox->setTitle(tr("General"));
 
+        ui->minimizeToTrayCheckBox->setVisible(true);
+
         ui->LanguageLabel->setVisible(false);
         ui->LanguageComboBox->setVisible(false);
     }
@@ -64,6 +65,8 @@ void Option::on_listWidgetOption_currentRowChanged(int currentRow)
 
         ui->LanguageLabel->setVisible(true);
         ui->LanguageComboBox->setVisible(true);
+
+        ui->minimizeToTrayCheckBox->setVisible(false);
     }
 }
 
@@ -71,12 +74,15 @@ void Option::Load()
 {
     //General
     {
-
+        if(SLSettings::MinimizeToTray())
+        {
+            ui->minimizeToTrayCheckBox->setChecked(true);
+        }
     }
 
     //Language
     {
-        if(SLSettings::AutomaticLanguage() == true)
+        if(SLSettings::AutomaticLanguage())
         {
             ui->LanguageComboBox->setCurrentIndex(0);
         }
@@ -102,7 +108,7 @@ void Option::Save()
 {
     //General
     {
-
+        SLSettings::setMinimizeToTray(ui->minimizeToTrayCheckBox->isChecked());
     }
 
     //Language
@@ -135,35 +141,35 @@ void Option::Save()
             if(QLocale::system().language() == QLocale::English)
             {
                 Translator->load(":/Language/English.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::English);
             }
             else if(QLocale::system().language() == QLocale::Persian)
             {
                 Translator->load(":/Language/Persian.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::Persian);
             }
             else if(QLocale::system().language() == QLocale::Spanish)
             {
                 Translator->load(":/Language/Spanish.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::Spanish);
             }
             else if(QLocale::system().language() == QLocale::Chinese)
             {
                 Translator->load(":/Language/Traditional Chinese.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::Chinese);
             }
             else
             {
                 Translator->load(":/Language/English.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::English);
             }
@@ -175,22 +181,22 @@ void Option::Save()
             if(SLSettings::Language() == QLocale::English)
             {
                 Translator->load(":/Language/English.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
             }
             else if(SLSettings::Language() == QLocale::Persian)
             {
                 Translator->load(":/Language/Persian.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
             }
             else if(SLSettings::Language() == QLocale::Spanish)
             {
                 Translator->load(":/Language/Spanish.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
             }
             else if(SLSettings::Language() == QLocale::Chinese)
             {
                 Translator->load(":/Language/Traditional Chinese.qm");
-                AdvancedDownloader::installTranslator(Translator);
+                QApplication::installTranslator(Translator);
             }
 
             SLSettings::setAutomaticLanguage(false);
@@ -198,11 +204,11 @@ void Option::Save()
 
         if(SLSettings::Language() == QLocale::English || SLSettings::Language() == QLocale::Spanish || SLSettings::Language() == QLocale::Chinese)
         {
-            AdvancedDownloader::setLayoutDirection(Qt::LeftToRight);
+            QApplication::setLayoutDirection(Qt::LeftToRight);
         }
         else if(SLSettings::Language() == QLocale::Persian)
         {
-            AdvancedDownloader::setLayoutDirection(Qt::RightToLeft);
+            QApplication::setLayoutDirection(Qt::RightToLeft);
         }
     }
 

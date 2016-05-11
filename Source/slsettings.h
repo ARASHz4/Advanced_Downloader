@@ -1,12 +1,19 @@
 #ifndef SLSETTINGS_H
 #define SLSETTINGS_H
 
-#include "advanceddownloader.h"
+#include <QSettings>
+#include <QDesktopWidget>
+#include <QLocale>
+#include <QTranslator>
 
 class SLSettings
 {
 public:
     SLSettings();
+
+    static bool MinimizeToTray();
+
+    static void LoadSettings();
 
     static void setLanguage(int value);
 
@@ -16,7 +23,7 @@ public:
 
     static bool AutomaticLanguage();
 
-    static void LoadSettings();
+    static void setMinimizeToTray(bool value);
 
     static void SaveSettings();
 
@@ -29,7 +36,7 @@ public:
     static void SaveOptionWindow(int x, int y, int w, int h);
 
 private:
-    static bool automaticLanguage;
+    static bool automaticLanguage, minimizeToTray;
     static int language;
 };
 

@@ -1,7 +1,5 @@
 #include "fileicon.h"
 
-#include <QUuid>
-
 FileIcon::FileIcon(QString suffix, QObject *parent) : QObject(parent)
 {
     suffixIcon = suffix;
@@ -9,8 +7,8 @@ FileIcon::FileIcon(QString suffix, QObject *parent) : QObject(parent)
 
 QPixmap FileIcon::getPixmap() const
 {
-    QString AddressFileIcon = QString(QString(getenv("TEMP")).replace("\\","/") +"/ADIF" +
-                                      QUuid::createUuid().toString() + "." + suffixIcon).replace("//","/");
+    QString AddressFileIcon = QString(QStandardPaths::writableLocation(QStandardPaths::TempLocation)
+                                                     + "/ADIF" + QUuid::createUuid().toString() + "." + suffixIcon).replace("//","/");
 
     QFile(AddressFileIcon).open(QIODevice::ReadWrite);
 
@@ -22,8 +20,8 @@ QPixmap FileIcon::getPixmap() const
 
 QIcon FileIcon::getIcon() const
 {
-    QString AddressFileIcon = QString(QString(getenv("TEMP")).replace("\\","/") +"/ADIF" +
-                                      QUuid::createUuid().toString() + "." + suffixIcon).replace("//","/");
+    QString AddressFileIcon = QString(QStandardPaths::writableLocation(QStandardPaths::TempLocation)
+                                                     + "/ADIF" + QUuid::createUuid().toString() + "." + suffixIcon).replace("//","/");
 
     QFile(AddressFileIcon).open(QIODevice::ReadWrite);
 

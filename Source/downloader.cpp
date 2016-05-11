@@ -1,7 +1,5 @@
 #include "downloader.h"
 
-#include <QDebug>
-
 Downloader::Downloader(QUrl Url, QObject *parent) : QObject(parent)
 {
     DownloadManager = new QNetworkAccessManager(this);

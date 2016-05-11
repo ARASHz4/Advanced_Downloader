@@ -1,8 +1,18 @@
-#include "advanceddownloader.h"
+#include <QSingleApp/qtsingleapplication.h>
+#include "downloaderwindow.h"
+
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
-    AdvancedDownloader ADApplication(argc, argv);
+    QtSingleApplication ADApplication(argc, argv);
+
+    if (ADApplication.sendMessage("Wake up!"))
+    {
+        return 0;
+    }
+
+    ADApplication.setActivationWindow(&ADApplication.downloaderwindow);
 
     ADApplication.setOrganizationName("ARASHz4");
     ADApplication.setApplicationName("Advanced Downloader");

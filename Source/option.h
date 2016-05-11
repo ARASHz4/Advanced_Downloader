@@ -1,8 +1,11 @@
 #ifndef OPTION_H
 #define OPTION_H
 
+#include "slsettings.h"
+
 #include <QDialog>
 #include <QPushButton>
+#include <QTranslator>
 
 namespace Ui {
 class Option;

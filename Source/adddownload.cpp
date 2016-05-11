@@ -1,12 +1,5 @@
 #include "adddownload.h"
-#include "ui_addDownload.h"
-#include "downloader.h"
-#include "downloaderwindow.h"
-#include "fileicon.h"
-
-#include <QFileDialog>
-#include <QFileIconProvider>
-#include <QUuid>
+#include "ui_adddownload.h"
 
 addDownload::addDownload(QWidget *parent) :
     QDialog(parent),
@@ -15,7 +8,7 @@ addDownload::addDownload(QWidget *parent) :
     ui->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    ui->saveLineEdit->setText(QString(getenv("USERPROFILE")).replace("\\","/") + "/Downloads/");
+    ui->saveLineEdit->setText(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + "/");
 }
 
 addDownload::~addDownload()
@@ -61,8 +54,6 @@ void addDownload::on_OKEditPushButton_clicked()
             ADDLFS = new FileSize(Url, this);
 
             connect(ADDLFS, SIGNAL (completed()), this, SLOT (SetSize()));
-
-
         }
     }
     else

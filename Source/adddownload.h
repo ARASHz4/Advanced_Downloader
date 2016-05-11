@@ -1,10 +1,15 @@
 #ifndef ADDDOWNLOAD_H
 #define ADDDOWNLOAD_H
 
-#include <downloader.h>
+#include "downloader.h"
+#include "downloaderwindow.h"
 #include "filesize.h"
+#include "fileicon.h"
 
 #include <QDialog>
+#include <QFileDialog>
+#include <QFileIconProvider>
+#include <QStandardPaths>
 
 namespace Ui {
 class addDownload;

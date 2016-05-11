@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>455</width>
-    <height>129</height>
+    <width>537</width>
+    <height>155</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <widget class="QLabel" name="addressLabel">
        <property name="minimumSize">
         <size>
-         <width>50</width>
+         <width>58</width>
          <height>0</height>
         </size>
        </property>
@@ -33,15 +33,9 @@
       <widget class="QLineEdit" name="addressLineEdit"/>
      </item>
      <item>
-      <widget class="QPushButton" name="OKEditPushButton">
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>16777215</height>
-        </size>
-       </property>
+      <widget class="QToolButton" name="OKEditPushButton">
        <property name="text">
-        <string>Ok</string>
+        <string>OK</string>
        </property>
       </widget>
      </item>
@@ -64,6 +58,24 @@
      </item>
      <item>
       <widget class="QLabel" name="fileSizeLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -83,7 +95,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>50</width>
+         <width>58</width>
          <height>0</height>
         </size>
        </property>
@@ -186,6 +198,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>addressLineEdit</tabstop>
+  <tabstop>OKEditPushButton</tabstop>
+  <tabstop>saveLineEdit</tabstop>
+  <tabstop>saveToolButton</tabstop>
+  <tabstop>addDlListStartPushButton</tabstop>
+  <tabstop>addDlListPushButton</tabstop>
+  <tabstop>cancellPushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

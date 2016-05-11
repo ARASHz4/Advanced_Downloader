@@ -2,6 +2,8 @@
 #define FILEICON_H
 
 #include <QObject>
+#include <QStandardPaths>
+#include <QUuid>
 #include <QFile>
 #include <QFileIconProvider>
 

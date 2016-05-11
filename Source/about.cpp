@@ -1,10 +1,5 @@
 #include "about.h"
 #include "ui_about.h"
-#include "advanceddownloader.h"
-#include "slsettings.h"
-
-#include <QMouseEvent>
-#include <QPixmap>
 
 About::About(QWidget *parent) :
     QDialog(parent),
@@ -23,11 +18,11 @@ About::~About()
 
 void About::Start()
 {
-    ui->ApplicationNameLabel->setText(AdvancedDownloader::applicationName());
+    ui->ApplicationNameLabel->setText(QApplication::applicationName());
 
     if(SLSettings::Language() == QLocale::Persian)
     {
-        QString Version = AdvancedDownloader::applicationVersion();
+        QString Version = QApplication::applicationVersion();
         Version.replace("0", "۰");
         Version.replace("1", "۱");
         Version.replace("2", "۲");
@@ -44,7 +39,7 @@ void About::Start()
     }
     else
     {
-        ui->ApplicationVersionLabel->setText(AdvancedDownloader::applicationVersion());
+        ui->ApplicationVersionLabel->setText(QApplication::applicationVersion());
     }
 
     ds = false;
@@ -57,7 +52,7 @@ void About::on_OkButton_clicked()
 
 void About::on_QtPushButton_clicked()
 {
-    AdvancedDownloader::aboutQt();
+    QApplication::aboutQt();
 }
 
 void About::mouseDoubleClickEvent(QMouseEvent *)
@@ -67,10 +62,10 @@ void About::mouseDoubleClickEvent(QMouseEvent *)
         ui->aboutIcon->setText("<html><head/><body><p><br/></p><p><span style="""
                                " font-size:12pt;"">" + tr("Developer :") + "</span></p><p align="""
                                "center""><span style="" font-size:12pt;"">" + tr("Arash Zare") + " ("
-                               + AdvancedDownloader::organizationName() + ")</span></p></body></html>");
+                               + QApplication::organizationName() + ")</span></p></body></html>");
         ds=true;
     }
-    else if (ds == true)
+    else if (ds)
     {
         ui->aboutIcon->setText(NULL);
         ui->aboutIcon->setPixmap(QPixmap(":/Icons/Big Icon.png"));

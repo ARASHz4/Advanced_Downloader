@@ -1,15 +1,5 @@
 #include "downloaderwindow.h"
 #include "ui_downloaderwindow.h"
-#include "advanceddownloader.h"
-#include "slsettings.h"
-#include "option.h"
-#include "about.h"
-#include "adddownload.h"
-
-#include <QFile>
-#include <QFileInfo>
-#include <QProgressBar>
-#include <QMessageBox>
 
 #include <QDebug>
 
@@ -56,10 +46,26 @@ void DownloaderWindow::Start()
     //Load Other Args Delay
     {
         #if defined(Q_OS_MAC)
-        LoadOtherPhotosDelay.setInterval(600);
-        LoadOtherPhotosDelay.connect(&LoadOtherPhotosDelay,SIGNAL(timeout()),this,SLOT(LoadOtherPhotos()));
+        //LoadOtherPhotosDelay.setInterval(600);
+        //LoadOtherPhotosDelay.connect(&LoadOtherPhotosDelay,SIGNAL(timeout()),this,SLOT(LoadOtherPhotos()));
         #endif
     }
+
+    QAction *RestoreAction = new QAction(QIcon(""), tr("Restore"), this);
+    RestoreAction->connect(RestoreAction, SIGNAL(triggered()), this, SLOT(RestoreWindow()));
+
+    QAction *ExitAction = new QAction(QIcon(""), tr("Exit"), this);
+    ExitAction->connect(ExitAction, SIGNAL(triggered()), this, SLOT(CancelScreenshot()));
+
+    QMenu *TrayMenu = new QMenu(this);
+    TrayMenu->addAction(RestoreAction);
+    TrayMenu->addAction(ExitAction);
+
+    tray = new QSystemTrayIcon(this);
+    tray->connect(tray, SIGNAL(), this, SLOT(RestoreWindow()));
+    tray->setIcon(QIcon(":/Icons/Small Icon.png"));
+    tray->setContextMenu(TrayMenu);
+    tray->show();
 
     show();
 }
@@ -70,7 +76,7 @@ void DownloaderWindow::Retranslate()
 
     QList<QAction *> ActionList;
 
-    if (AdvancedDownloader::layoutDirection() == Qt::LeftToRight)
+    if (QApplication::layoutDirection() == Qt::LeftToRight)
     {
 //        ActionList << ui->actionOpen_Photo << ui->mainToolBar->addSeparator() << ui->actionZoomIN
 //                   << ui->actionZoom1_1 << ui->actionZoomOut << ui->actionFitWindow
@@ -98,10 +104,22 @@ void DownloaderWindow::OpenArguments(QStringList Arguments)
 
 }
 
-void DownloaderWindow::closeEvent (QCloseEvent *)
+void DownloaderWindow::closeEvent (QCloseEvent *CloseEvant)
 {
     SLSettings::SaveDownloaderWindow(this->geometry().x(), this->geometry().y(), this->geometry().width(),
                                 this->geometry().height(), toolBarArea(ui->mainToolBar), isMaximized(), isFullScreen());
+
+    if(SLSettings::MinimizeToTray())
+    {
+        CloseEvant->ignore();
+
+        this->hide();
+    }
+}
+
+void DownloaderWindow::RestoreWindow()
+{
+    show();
 }
 
 void DownloaderWindow::on_actionAdd_a_download_triggered()
@@ -183,7 +201,6 @@ void DownloaderWindow::on_actionStart_Download_triggered()
 
 void DownloaderWindow::SetProgress()
 {
-    //qDebug()<<FileDownload->getDLTotal();
     downloadProgressBarList[currentDownload]->setMaximum(FileDownload->getDLTotal());
     downloadProgressBarList[currentDownload]->setValue(FileDownload->getDLRead());
 }
@@ -191,6 +208,8 @@ void DownloaderWindow::SetProgress()
 void DownloaderWindow::Download_Completed()
 {
     QFile *DownloadedFile = new QFile(DownloadListFile[currentDownload]);
+
+    qDebug()<<DownloadListFile[currentDownload];
 
     if(DownloadedFile->open(QFile::Append))
     {
@@ -218,6 +237,4 @@ void DownloaderWindow::showDownloadError()
 void DownloaderWindow::on_actionStop_Download_triggered()
 {
     FileDownload->cancellDownload();
-
-    qDebug()<<ui->downloadTreeWidget->currentIndex().row();
 }

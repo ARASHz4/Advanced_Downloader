@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
-    <height>425</height>
+    <width>613</width>
+    <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,8 +72,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>616</width>
-     <height>21</height>
+     <width>613</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -200,6 +200,9 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>downloadTreeWidget</tabstop>
+ </tabstops>
  <resources>
   <include location="icon.qrc"/>
  </resources>
