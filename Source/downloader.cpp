@@ -1,10 +1,14 @@
 #include "downloader.h"
 
+#include <QDebug>
+
 Downloader::Downloader(QUrl Url, QObject *parent) : QObject(parent)
 {
     DownloadManager = new QNetworkAccessManager(this);
 
     reply =  DownloadManager->get(QNetworkRequest(Url));
+
+    DownloadTime.start();
 
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(updateProgress(qint64, qint64)));
@@ -31,6 +35,26 @@ QString Downloader::getDLE() const
 
 void Downloader::updateProgress(qint64 read, qint64 total)
 {
+    double speed = read * 1000.0 / DownloadTime.elapsed();
+
+    QString unit;
+    if (speed < 1024)
+    {
+        unit = tr("bytes/sec");
+    }
+    else if (speed < 1024*1024)
+    {
+        speed /= 1024;
+        unit = tr("KB/sec");
+    }
+    else
+    {
+        speed /= 1024*1024;
+        unit = tr("MB/sec");
+    }
+
+    DownloadSpeed = QString::number(speed) + " " + unit;
+
     DLRead = read;
     DLTotal = total;
 
@@ -45,6 +69,11 @@ qint64 Downloader::getDLRead() const
 qint64 Downloader::getDLTotal() const
 {
     return DLTotal;
+}
+
+QString Downloader::getDownloadSpeed() const
+{
+    return DownloadSpeed;
 }
 
 void Downloader::fileDownloaded()

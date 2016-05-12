@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>613</width>
-    <height>429</height>
+    <width>762</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,9 +45,6 @@
       <property name="sortingEnabled">
        <bool>true</bool>
       </property>
-      <property name="animated">
-       <bool>true</bool>
-      </property>
       <column>
        <property name="text">
         <string>File Name</string>
@@ -56,6 +53,11 @@
       <column>
        <property name="text">
         <string>Size</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Speed</string>
        </property>
       </column>
       <column>
@@ -72,8 +74,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>613</width>
-     <height>22</height>
+     <width>762</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -24,12 +24,6 @@ void addDownload::on_OKEditPushButton_clicked()
         {
             editUrl = false;
 
-            ui->saveLabel->setEnabled(true);
-            ui->saveLineEdit->setEnabled(true);
-            ui->saveToolButton->setEnabled(true);
-            ui->addDlListPushButton->setEnabled(true);
-            ui->addDlListStartPushButton->setEnabled(true);
-            ui->cancellPushButton->setEnabled(true);
             ui->addressLineEdit->setEnabled(false);
             ui->OKEditPushButton->setText(tr("Edit"));
 
@@ -54,21 +48,32 @@ void addDownload::on_OKEditPushButton_clicked()
             ADDLFS = new FileSize(Url, this);
 
             connect(ADDLFS, SIGNAL (completed()), this, SLOT (SetSize()));
+
+            ui->saveLabel->setEnabled(true);
+            ui->saveLineEdit->setEnabled(true);
+            ui->saveToolButton->setEnabled(true);
+            ui->addDlListPushButton->setEnabled(true);
+            ui->addDlListStartPushButton->setEnabled(true);
+            ui->cancellPushButton->setEnabled(true);
+
         }
     }
     else
     {
         editUrl = true;
+
+        ui->addressLineEdit->setEnabled(true);
+        ui->OKEditPushButton->setText(tr("OK"));
+
+        ui->fileIconLabel->setText(" ");
+        ui->fileSizeLabel->setText(NULL);
+
         ui->saveLabel->setEnabled(false);
         ui->saveLineEdit->setEnabled(false);
         ui->saveToolButton->setEnabled(false);
         ui->addDlListPushButton->setEnabled(false);
         ui->addDlListStartPushButton->setEnabled(false);
         ui->cancellPushButton->setEnabled(false);
-        ui->addressLineEdit->setEnabled(true);
-        ui->fileIconLabel->setText(" ");
-        ui->fileSizeLabel->setText(NULL);
-        ui->OKEditPushButton->setText(tr("OK"));
     }
 }
 

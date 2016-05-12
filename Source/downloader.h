@@ -6,6 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QTimer>
 
 class Downloader : public QObject
 {
@@ -19,9 +20,9 @@ public:
 
     qint64 getDLRead() const;
 
-    QString getDLE() const;
+    QString getDownloadSpeed() const;
 
-    //QString getFileSize() const;
+    QString getDLE() const;
 
 public slots:
     void cancellDownload();
@@ -38,7 +39,8 @@ private:
     QNetworkReply *reply;
     QByteArray DownloadedData;
     qint64 DLTotal, DLRead;
-    QString DLE;
+    QString DLE, DownloadSpeed;
+    QTime DownloadTime;
 
 signals:
     void downloaded();

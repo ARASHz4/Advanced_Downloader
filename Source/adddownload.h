@@ -1,8 +1,6 @@
 #ifndef ADDDOWNLOAD_H
 #define ADDDOWNLOAD_H
 
-#include "downloader.h"
-#include "downloaderwindow.h"
 #include "filesize.h"
 #include "fileicon.h"
 
@@ -45,8 +43,6 @@ private:
     QString DLUrl, DLFile, DLSize;
 
     bool startDownload, editUrl=true;
-
-    Downloader *FileDownload;
 
     FileSize *ADDLFS;
 

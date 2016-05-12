@@ -74,10 +74,7 @@ void Option::Load()
 {
     //General
     {
-        if(SLSettings::MinimizeToTray())
-        {
-            ui->minimizeToTrayCheckBox->setChecked(true);
-        }
+        ui->minimizeToTrayCheckBox->setChecked(SLSettings::MinimizeToTray());
     }
 
     //Language

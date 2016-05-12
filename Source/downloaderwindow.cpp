@@ -62,7 +62,7 @@ void DownloaderWindow::Start()
     TrayMenu->addAction(ExitAction);
 
     tray = new QSystemTrayIcon(this);
-    tray->connect(tray, SIGNAL(), this, SLOT(RestoreWindow()));
+    tray->connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(RestoreWindow()));
     tray->setIcon(QIcon(":/Icons/Small Icon.png"));
     tray->setContextMenu(TrayMenu);
     tray->show();
@@ -149,13 +149,13 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
 
         downloadProgressBarList << newPrProgressBar;
 
-        ui->downloadTreeWidget->setItemWidget(item, 2, newPrProgressBar);
+        ui->downloadTreeWidget->setItemWidget(item, 3, newPrProgressBar);
 
         newPrProgressBar->setValue(0);
 
         if(startDownload)
         {
-            on_actionStart_Download_triggered();
+            //on_actionStart_Download_triggered();
         }
     }
 }
@@ -201,6 +201,7 @@ void DownloaderWindow::on_actionStart_Download_triggered()
 
 void DownloaderWindow::SetProgress()
 {
+    ui->downloadTreeWidget->itemAt(currentDownload,2)->setText(2,FileDownload->getDownloadSpeed());
     downloadProgressBarList[currentDownload]->setMaximum(FileDownload->getDLTotal());
     downloadProgressBarList[currentDownload]->setValue(FileDownload->getDLRead());
 }
