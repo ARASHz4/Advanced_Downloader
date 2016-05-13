@@ -25,7 +25,7 @@ public:
     QString getDLE() const;
 
 public slots:
-    void cancellDownload();
+    void cancelDownload();
 
 private slots:
     void error(QNetworkReply::NetworkError);

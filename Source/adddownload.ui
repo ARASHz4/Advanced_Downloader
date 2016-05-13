@@ -117,7 +117,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>...</string>
+        <string notr="true">...</string>
        </property>
       </widget>
      </item>
@@ -152,12 +152,12 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="cancellPushButton">
+      <widget class="QPushButton" name="cancelPushButton">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Cancell</string>
+        <string>Cancel</string>
        </property>
       </widget>
      </item>
@@ -205,7 +205,7 @@
   <tabstop>saveToolButton</tabstop>
   <tabstop>addDlListStartPushButton</tabstop>
   <tabstop>addDlListPushButton</tabstop>
-  <tabstop>cancellPushButton</tabstop>
+  <tabstop>cancelPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

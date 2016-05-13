@@ -68,7 +68,7 @@ void About::mouseDoubleClickEvent(QMouseEvent *)
     else if (ds)
     {
         ui->aboutIcon->setText(NULL);
-        ui->aboutIcon->setPixmap(QPixmap(":/Icons/Big Icon.png"));
+        ui->aboutIcon->setPixmap(QPixmap(":/Icon/Icons/Big Icon.png"));
         ds=false;
     }
 }

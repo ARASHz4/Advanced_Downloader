@@ -26,8 +26,8 @@
    <string>About Advanced Downloader</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icon.qrc">
-    <normaloff>:/Icons/About.png</normaloff>:/Icons/About.png</iconset>
+   <iconset resource="ADResource.qrc">
+    <normaloff>:/Icon/Icons/About.png</normaloff>:/Icon/Icons/About.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -65,7 +65,7 @@
         <enum>Qt::AutoText</enum>
        </property>
        <property name="pixmap">
-        <pixmap resource="icon.qrc">:/Icons/Big Icon.png</pixmap>
+        <pixmap resource="ADResource.qrc">:/Icon/Icons/Big Icon.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -300,16 +300,13 @@
        <property name="toolTip">
         <string>About Qt</string>
        </property>
-       <property name="text">
-        <string/>
-       </property>
        <property name="icon">
-        <iconset resource="icon.qrc">
-         <normaloff>:/Icons/Qt.png</normaloff>:/Icons/Qt.png</iconset>
+        <iconset resource="ADResource.qrc">
+         <normaloff>:/Icon/Icons/Qt.png</normaloff>:/Icon/Icons/Qt.png</iconset>
        </property>
        <property name="iconSize">
         <size>
-         <width>20</width>
+         <width>24</width>
          <height>20</height>
         </size>
        </property>
@@ -346,7 +343,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="icon.qrc"/>
+  <include location="ADResource.qrc"/>
  </resources>
  <connections/>
 </ui>

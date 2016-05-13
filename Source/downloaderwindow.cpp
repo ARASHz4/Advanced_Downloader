@@ -8,6 +8,8 @@ DownloaderWindow::DownloaderWindow(QWidget *parent) :
     ui(new Ui::DownloaderWindow)
 {
     ui->setupUi(this);
+
+    tray = new QSystemTrayIcon(this);
 }
 
 DownloaderWindow::~DownloaderWindow()
@@ -46,25 +48,13 @@ void DownloaderWindow::Start()
     //Load Other Args Delay
     {
         #if defined(Q_OS_MAC)
-        //LoadOtherPhotosDelay.setInterval(600);
-        //LoadOtherPhotosDelay.connect(&LoadOtherPhotosDelay,SIGNAL(timeout()),this,SLOT(LoadOtherPhotos()));
+        //LoadOtherArgsDelay.setInterval(600);
+        //LoadOtherArgsDelay.connect(&LoadOtherPhotosDelay,SIGNAL(timeout()),this,SLOT(LoadOtherPhotos()));
         #endif
     }
 
-    QAction *RestoreAction = new QAction(QIcon(""), tr("Restore"), this);
-    RestoreAction->connect(RestoreAction, SIGNAL(triggered()), this, SLOT(RestoreWindow()));
-
-    QAction *ExitAction = new QAction(QIcon(""), tr("Exit"), this);
-    ExitAction->connect(ExitAction, SIGNAL(triggered()), this, SLOT(CancelScreenshot()));
-
-    QMenu *TrayMenu = new QMenu(this);
-    TrayMenu->addAction(RestoreAction);
-    TrayMenu->addAction(ExitAction);
-
-    tray = new QSystemTrayIcon(this);
-    tray->connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(RestoreWindow()));
-    tray->setIcon(QIcon(":/Icons/Small Icon.png"));
-    tray->setContextMenu(TrayMenu);
+    tray->connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(RestoreWindowTrigger(QSystemTrayIcon::ActivationReason)));
+    tray->setIcon(QIcon(":/Icon/Icons/Small Icon.png"));
     tray->show();
 
     show();
@@ -74,29 +64,46 @@ void DownloaderWindow::Retranslate()
 {
     ui->retranslateUi(this);
 
-    QList<QAction *> ActionList;
+    QAction *AboutAction = new QAction(QIcon(":/Icon/Icons/About.png"), tr("About"), this);
+    AboutAction->connect(AboutAction, SIGNAL(triggered()), this, SLOT(on_actionAbout_triggered()));
+
+    QAction *RestoreAction = new QAction(QIcon(":/Icon/Icons/Restore.png"), tr("Restore"), this);
+    RestoreAction->connect(RestoreAction, SIGNAL(triggered()), this, SLOT(RestoreWindow()));
+
+    QAction *ExitAction = new QAction(QIcon(":/Icon/Icons/Exit.png"), tr("Exit"), this);
+    ExitAction->connect(ExitAction, SIGNAL(triggered()), this, SLOT(on_actionExit_triggered()));
+
+    QMenu *TrayMenu = new QMenu(this);
+    TrayMenu->addAction(AboutAction);
+    TrayMenu->addSeparator();
+    TrayMenu->addAction(RestoreAction);
+    TrayMenu->addAction(ExitAction);
+
+    tray->setContextMenu(TrayMenu);
+
+    /*QList<QAction *> ActionList;
 
     if (QApplication::layoutDirection() == Qt::LeftToRight)
     {
-//        ActionList << ui->actionOpen_Photo << ui->mainToolBar->addSeparator() << ui->actionZoomIN
-//                   << ui->actionZoom1_1 << ui->actionZoomOut << ui->actionFitWindow
-//                   << ui->mainToolBar->addSeparator() << ui->actionRotateLeft << ui->actionRotateRight
-//                   << ui->mainToolBar->addSeparator() << ui->actionPrevious_Photo << ui->actionSlideshow
-//                   << ui->actionNext_Photo << ui->mainToolBar->addSeparator() << ui->actionPhotoInfo
-//                   << ui->mainToolBar->addSeparator() << ui->actionFullscreen;
+        ActionList << ui->actionOpen_Photo << ui->mainToolBar->addSeparator() << ui->actionZoomIN
+                   << ui->actionZoom1_1 << ui->actionZoomOut << ui->actionFitWindow
+                   << ui->mainToolBar->addSeparator() << ui->actionRotateLeft << ui->actionRotateRight
+                   << ui->mainToolBar->addSeparator() << ui->actionPrevious_Photo << ui->actionSlideshow
+                   << ui->actionNext_Photo << ui->mainToolBar->addSeparator() << ui->actionPhotoInfo
+                   << ui->mainToolBar->addSeparator() << ui->actionFullscreen;
     }
     else
     {
-//        ActionList << ui->actionOpen_Photo << ui->mainToolBar->addSeparator() << ui->actionZoomIN
-//                   << ui->actionZoom1_1 << ui->actionZoomOut << ui->actionFitWindow
-//                   << ui->mainToolBar->addSeparator() << ui->actionRotateRight << ui->actionRotateLeft
-//                   << ui->mainToolBar->addSeparator() << ui->actionNext_Photo << ui->actionSlideshow
-//                   << ui->actionPrevious_Photo << ui->mainToolBar->addSeparator() << ui->actionPhotoInfo
-//                   << ui->mainToolBar->addSeparator() << ui->actionFullscreen;
+        ActionList << ui->actionOpen_Photo << ui->mainToolBar->addSeparator() << ui->actionZoomIN
+                   << ui->actionZoom1_1 << ui->actionZoomOut << ui->actionFitWindow
+                   << ui->mainToolBar->addSeparator() << ui->actionRotateRight << ui->actionRotateLeft
+                   << ui->mainToolBar->addSeparator() << ui->actionNext_Photo << ui->actionSlideshow
+                   << ui->actionPrevious_Photo << ui->mainToolBar->addSeparator() << ui->actionPhotoInfo
+                   << ui->mainToolBar->addSeparator() << ui->actionFullscreen;
     }
 
-//    ui->mainToolBar->clear();
-//    ui->mainToolBar->addActions(ActionList);
+    ui->mainToolBar->clear();
+    ui->mainToolBar->addActions(ActionList);*/
 }
 
 void DownloaderWindow::OpenArguments(QStringList Arguments)
@@ -114,6 +121,14 @@ void DownloaderWindow::closeEvent (QCloseEvent *CloseEvant)
         CloseEvant->ignore();
 
         this->hide();
+    }
+}
+
+void DownloaderWindow::RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW)
+{
+    if(RW == QSystemTrayIcon::Trigger)
+    {
+        show();
     }
 }
 
@@ -166,9 +181,9 @@ void DownloaderWindow::on_actionAbout_triggered()
     AD.exec();
 }
 
-void DownloaderWindow::on_actionOption_triggered()
+void DownloaderWindow::on_actionOptions_triggered()
 {
-    Option OD(this);
+    Options OD(this);
     OD.exec();
 
     Retranslate();
@@ -237,5 +252,15 @@ void DownloaderWindow::showDownloadError()
 
 void DownloaderWindow::on_actionStop_Download_triggered()
 {
-    FileDownload->cancellDownload();
+    if(ui->downloadTreeWidget->currentIndex().row() >= 0)
+    {
+        FileDownload->cancelDownload();
+    }
+}
+
+void DownloaderWindow::on_actionExit_triggered()
+{
+    tray->hide();
+
+    exit(1);
 }

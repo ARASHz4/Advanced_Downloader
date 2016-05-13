@@ -1,0 +1,11 @@
+SOURCES += downloaderwindow.cpp \
+    about.cpp \
+    options.cpp \
+    downloader.cpp \
+    filesize.cpp \
+    adddownload.cpp
+
+FORMS += downloaderwindow.ui \
+    about.ui \
+    options.ui \
+    adddownload.ui

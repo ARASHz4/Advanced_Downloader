@@ -1,16 +1,22 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/Language">
+        <file>Language/English.qm</file>
+        <file>Language/Persian.qm</file>
+        <file>Language/Spanish.qm</file>
+    </qresource>
+    <qresource prefix="/Icon">
         <file>Icons/About.png</file>
+        <file>Icons/Big Icon.png</file>
+        <file>Icons/Exit.png</file>
         <file>Icons/GitHub.png</file>
         <file>Icons/HomePage.png</file>
         <file>Icons/language.png</file>
         <file>Icons/Option.png</file>
         <file>Icons/Pause Download.png</file>
         <file>Icons/Qt.png</file>
-        <file>Icons/Quit.png</file>
+        <file>Icons/Restore.png</file>
+        <file>Icons/Small Icon.png</file>
         <file>Icons/SourceForge.png</file>
         <file>Icons/Start Download.png</file>
-        <file>Icons/Big Icon.png</file>
-        <file>Icons/Small Icon.png</file>
     </qresource>
 </RCC>

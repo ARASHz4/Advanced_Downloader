@@ -54,7 +54,7 @@ void addDownload::on_OKEditPushButton_clicked()
             ui->saveToolButton->setEnabled(true);
             ui->addDlListPushButton->setEnabled(true);
             ui->addDlListStartPushButton->setEnabled(true);
-            ui->cancellPushButton->setEnabled(true);
+            ui->cancelPushButton->setEnabled(true);
 
         }
     }
@@ -73,7 +73,7 @@ void addDownload::on_OKEditPushButton_clicked()
         ui->saveToolButton->setEnabled(false);
         ui->addDlListPushButton->setEnabled(false);
         ui->addDlListStartPushButton->setEnabled(false);
-        ui->cancellPushButton->setEnabled(false);
+        ui->cancelPushButton->setEnabled(false);
     }
 }
 
@@ -113,7 +113,7 @@ std::tuple<QString, QString, QString, bool> addDownload::Return()
     return std::make_tuple(DLUrl, DLFile, DLSize, startDownload);
 }
 
-void addDownload::on_cancellPushButton_clicked()
+void addDownload::on_cancelPushButton_clicked()
 {
     close();
 }

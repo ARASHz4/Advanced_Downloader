@@ -3,7 +3,7 @@
 
 #include "downloader.h"
 #include "slsettings.h"
-#include "option.h"
+#include "options.h"
 #include "about.h"
 #include "adddownload.h"
 
@@ -46,13 +46,15 @@ private slots:
 
     void closeEvent (QCloseEvent *CloseEvant);
 
+    void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
+
     void RestoreWindow();
 
     void on_actionAdd_a_download_triggered();
 
     void on_actionAbout_triggered();
 
-    void on_actionOption_triggered();
+    void on_actionOptions_triggered();
 
     void on_actionStart_Download_triggered();
 
@@ -63,6 +65,8 @@ private slots:
     void showDownloadError();
 
     void on_actionStop_Download_triggered();
+
+    void on_actionExit_triggered();
 
 public slots:
     void Start();

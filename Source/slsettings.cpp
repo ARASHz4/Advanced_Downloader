@@ -62,8 +62,7 @@ void SLSettings::LoadSettings()
                 (SettingsAD.value("Language").toInt() == 0
                  || SettingsAD.value("Language").toInt() == QLocale::English
                  || SettingsAD.value("Language").toInt() == QLocale::Persian
-                 || SettingsAD.value("Language").toInt() == QLocale::Spanish
-                 || SettingsAD.value("Language").toInt() == QLocale::Chinese))
+                 || SettingsAD.value("Language").toInt() == QLocale::Spanish))
         {
             SLSettings::setLanguage(SettingsAD.value("Language").toInt());
         }
@@ -79,35 +78,28 @@ void SLSettings::LoadSettings()
         {
             if(QLocale::system().language() == QLocale::English)
             {
-                Translator->load(":/Language/English.qm");
+                Translator->load(":/Language/Language/English.qm");
                 QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::English);
             }
             else if(QLocale::system().language() == QLocale::Persian)
             {
-                Translator->load(":/Language/Persian.qm");
+                Translator->load(":/Language/Language/Persian.qm");
                 QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::Persian);
             }
             else if(QLocale::system().language() == QLocale::Spanish)
             {
-                Translator->load(":/Language/Spanish.qm");
+                Translator->load(":/Language/Language/Spanish.qm");
                 QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::Spanish);
             }
-            else if(QLocale::system().language() == QLocale::Chinese)
-            {
-                Translator->load(":/Language/Traditional Chinese.qm");
-                QApplication::installTranslator(Translator);
-
-                SLSettings::setLanguage(QLocale::Chinese);
-            }
             else
             {
-                Translator->load(":/Language/English.qm");
+                Translator->load(":/Language/Language/English.qm");
                 QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::English);
@@ -119,29 +111,24 @@ void SLSettings::LoadSettings()
         {
             if(SLSettings::Language() == QLocale::English)
             {
-                Translator->load(":/Language/English.qm");
+                Translator->load(":/Language/Language/English.qm");
                 QApplication::installTranslator(Translator);
             }
             else if(SLSettings::Language() == QLocale::Persian)
             {
-                Translator->load(":/Language/Persian.qm");
+                Translator->load(":/Language/Language/Persian.qm");
                 QApplication::installTranslator(Translator);
             }
             else if(SLSettings::Language() == QLocale::Spanish)
             {
-                Translator->load(":/Language/Spanish.qm");
-                QApplication::installTranslator(Translator);
-            }
-            else if(SLSettings::Language() == QLocale::Chinese)
-            {
-                Translator->load(":/Language/Traditional Chinese.qm");
+                Translator->load(":/Language/Language/Spanish.qm");
                 QApplication::installTranslator(Translator);
             }
 
             SLSettings::setAutomaticLanguage(false);
         }
 
-        if(SLSettings::Language() == QLocale::English || SLSettings::Language() == QLocale::Spanish || SLSettings::Language() == QLocale::Chinese)
+        if(SLSettings::Language() == QLocale::English || SLSettings::Language() == QLocale::Spanish)
         {
             QApplication::setLayoutDirection(Qt::LeftToRight);
         }

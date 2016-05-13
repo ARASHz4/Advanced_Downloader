@@ -1,10 +1,10 @@
-#include "option.h"
-#include "ui_option.h"
+#include "options.h"
+#include "ui_options.h"
 
 
-Option::Option(QWidget *parent) :
+Options::Options(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::Option)
+    ui(new Ui::Options)
 {
     ui->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -12,12 +12,12 @@ Option::Option(QWidget *parent) :
     Start();
 }
 
-Option::~Option()
+Options::~Options()
 {
     delete ui; 
 }
 
-void Option::Start()
+void Options::Start()
 {
     int x, y, w, h;
     std::tie(x, y, w, h) = SLSettings::LoadOptionWindow();
@@ -48,12 +48,13 @@ void Option::Start()
     Load();
 }
 
-void Option::on_listWidgetOption_currentRowChanged(int currentRow)
+void Options::on_listWidgetOption_currentRowChanged(int currentRow)
 {
     if(currentRow == 0)
     {
         ui->OptionGroupBox->setTitle(tr("General"));
 
+        ui->launchStartupCheckBox->setVisible(true);
         ui->minimizeToTrayCheckBox->setVisible(true);
 
         ui->LanguageLabel->setVisible(false);
@@ -66,11 +67,12 @@ void Option::on_listWidgetOption_currentRowChanged(int currentRow)
         ui->LanguageLabel->setVisible(true);
         ui->LanguageComboBox->setVisible(true);
 
+        ui->launchStartupCheckBox->setVisible(false);
         ui->minimizeToTrayCheckBox->setVisible(false);
     }
 }
 
-void Option::Load()
+void Options::Load()
 {
     //General
     {
@@ -101,7 +103,7 @@ void Option::Load()
     }
 }
 
-void Option::Save()
+void Options::Save()
 {
     //General
     {
@@ -126,10 +128,6 @@ void Option::Save()
         {
             SLSettings::setLanguage(QLocale::Spanish);
         }
-        else if(ui->LanguageComboBox->currentIndex() == 5)
-        {
-            SLSettings::setLanguage(QLocale::Chinese);
-        }
 
         QTranslator *Translator = new QTranslator;
 
@@ -137,35 +135,28 @@ void Option::Save()
         {
             if(QLocale::system().language() == QLocale::English)
             {
-                Translator->load(":/Language/English.qm");
+                Translator->load(":/Language/Language/English.qm");
                 QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::English);
             }
             else if(QLocale::system().language() == QLocale::Persian)
             {
-                Translator->load(":/Language/Persian.qm");
+                Translator->load(":/Language/Language/Persian.qm");
                 QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::Persian);
             }
             else if(QLocale::system().language() == QLocale::Spanish)
             {
-                Translator->load(":/Language/Spanish.qm");
+                Translator->load(":/Language/Language/Spanish.qm");
                 QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::Spanish);
             }
-            else if(QLocale::system().language() == QLocale::Chinese)
-            {
-                Translator->load(":/Language/Traditional Chinese.qm");
-                QApplication::installTranslator(Translator);
-
-                SLSettings::setLanguage(QLocale::Chinese);
-            }
             else
             {
-                Translator->load(":/Language/English.qm");
+                Translator->load(":/Language/Language/English.qm");
                 QApplication::installTranslator(Translator);
 
                 SLSettings::setLanguage(QLocale::English);
@@ -177,29 +168,24 @@ void Option::Save()
         {
             if(SLSettings::Language() == QLocale::English)
             {
-                Translator->load(":/Language/English.qm");
+                Translator->load(":/Language/Language/English.qm");
                 QApplication::installTranslator(Translator);
             }
             else if(SLSettings::Language() == QLocale::Persian)
             {
-                Translator->load(":/Language/Persian.qm");
+                Translator->load(":/Language/Language/Persian.qm");
                 QApplication::installTranslator(Translator);
             }
             else if(SLSettings::Language() == QLocale::Spanish)
             {
-                Translator->load(":/Language/Spanish.qm");
-                QApplication::installTranslator(Translator);
-            }
-            else if(SLSettings::Language() == QLocale::Chinese)
-            {
-                Translator->load(":/Language/Traditional Chinese.qm");
+                Translator->load(":/Language/Language/Spanish.qm");
                 QApplication::installTranslator(Translator);
             }
 
             SLSettings::setAutomaticLanguage(false);
         }
 
-        if(SLSettings::Language() == QLocale::English || SLSettings::Language() == QLocale::Spanish || SLSettings::Language() == QLocale::Chinese)
+        if(SLSettings::Language() == QLocale::English || SLSettings::Language() == QLocale::Spanish)
         {
             QApplication::setLayoutDirection(Qt::LeftToRight);
         }
@@ -212,18 +198,18 @@ void Option::Save()
     SLSettings::SaveSettings();
 }
 
-void Option::OKButton()
+void Options::OKButton()
 {
     Save();
     close();
 }
 
-void Option::CancelButton()
+void Options::CancelButton()
 {
     close();
 }
 
-void Option::ApplyButton()
+void Options::ApplyButton()
 {
     Save();
 
@@ -240,15 +226,16 @@ void Option::ApplyButton()
     ui->LanguageComboBox->setCurrentIndex(cl);
 }
 
-void Option::RestoreDefaultsButton()
+void Options::RestoreDefaultsButton()
 {
+    SLSettings::setMinimizeToTray(true);
     SLSettings::setAutomaticLanguage(true);
     SLSettings::setLanguage(0);
 
     Load();
 }
 
-void Option::closeEvent (QCloseEvent *)
+void Options::closeEvent (QCloseEvent *)
 {
     SLSettings::SaveOptionWindow(this->geometry().x(), this->geometry().y(), this->geometry().width(), this->geometry().height());
 }

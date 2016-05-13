@@ -83,7 +83,7 @@ void Downloader::fileDownloaded()
     emit downloaded();
 }
 
-void Downloader::cancellDownload()
+void Downloader::cancelDownload()
 {
     disconnect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
     disconnect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(updateProgress(qint64, qint64)));

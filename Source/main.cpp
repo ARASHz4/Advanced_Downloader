@@ -1,8 +1,6 @@
 #include <QSingleApp/qtsingleapplication.h>
 #include "downloaderwindow.h"
 
-#include <QApplication>
-
 int main(int argc, char *argv[])
 {
     QtSingleApplication ADApplication(argc, argv);
@@ -17,7 +15,7 @@ int main(int argc, char *argv[])
     ADApplication.setOrganizationName("ARASHz4");
     ADApplication.setApplicationName("Advanced Downloader");
     ADApplication.setApplicationVersion("1.0.0 Alpha");
-    ADApplication.setOrganizationDomain("ARASHz4");
+    ADApplication.setOrganizationDomain("arashz4.com");
 
     ADApplication.StartApplication();
 

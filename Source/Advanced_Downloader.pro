@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     downloaderwindow.cpp \
     about.cpp \
     slsettings.cpp \
-    option.cpp \
     downloader.cpp \
     fileicon.cpp \
     filesize.cpp \
@@ -32,12 +31,12 @@ SOURCES += main.cpp\
     QSingleApp/qtlockedfile_unix.cpp \
     QSingleApp/qtlockedfile_win.cpp \
     QSingleApp/qtsingleapplication.cpp \
-    QSingleApp/qtsinglecoreapplication.cpp
+    QSingleApp/qtsinglecoreapplication.cpp \
+    options.cpp
 
 HEADERS += downloaderwindow.h \
     about.h \
     slsettings.h \
-    option.h \
     downloader.h \
     fileicon.h \
     filesize.h \
@@ -45,16 +44,16 @@ HEADERS += downloaderwindow.h \
     QSingleApp/qtlocalpeer.h \
     QSingleApp/qtlockedfile.h \
     QSingleApp/qtsingleapplication.h \
-    QSingleApp/qtsinglecoreapplication.h
+    QSingleApp/qtsinglecoreapplication.h \
+    options.h
 
 FORMS += downloaderwindow.ui \
     about.ui \
-    option.ui \
-    adddownload.ui
+    adddownload.ui \
+    options.ui
 
 RESOURCES += \
-    icon.qrc \
-    language.qrc
+    ADResource.qrc
 
 DISTFILES += \
     Linux/AdvancedDownloader.desktop \

@@ -92,10 +92,12 @@ QWidget* QtSingleApplication::activationWindow() const
 
 void QtSingleApplication::activateWindow()
 {
-    if (actWin) {
+    if (actWin)
+    {
         actWin->setWindowState(actWin->windowState() & ~Qt::WindowMinimized);
         actWin->raise();
         actWin->activateWindow();
+        actWin->show();
     }
 }
 
@@ -333,7 +335,7 @@ void QtSingleApplication::StartApplication()
             QMessageBox msg;
             msg.setIcon(QMessageBox::Critical);
             msg.setWindowTitle(QApplication::applicationName() + " Error");
-            msg.setWindowIcon(QIcon(":/Icons/Small Icon.png"));
+            msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
             msg.setText("The application can't start because some files is missing from your computer.");
             msg.setInformativeText("Try reinstalling the application to fix this problem.");
             msg.setDetailedText("This files is missing :" + Message);

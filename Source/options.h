@@ -1,5 +1,5 @@
-#ifndef OPTION_H
-#define OPTION_H
+#ifndef OPTIONS_H
+#define OPTIONS_H
 
 #include "slsettings.h"
 
@@ -8,19 +8,19 @@
 #include <QTranslator>
 
 namespace Ui {
-class Option;
+class Options;
 }
 
-class Option : public QDialog
+class Options : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Option(QWidget *parent = 0);
-    ~Option();
+    explicit Options(QWidget *parent = 0);
+    ~Options();
 
 private:
-    Ui::Option *ui;
+    Ui::Options *ui;
 
     QPushButton OK, Cancel, Apply, RestoreDefaults;
 
@@ -45,4 +45,4 @@ private slots:
 
 };
 
-#endif // OPTION_H
+#endif // OPTIONS_H

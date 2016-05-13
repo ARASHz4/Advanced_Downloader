@@ -33,7 +33,7 @@ private slots:
 
     void on_addDlListPushButton_clicked();
 
-    void on_cancellPushButton_clicked();
+    void on_cancelPushButton_clicked();
 
     void on_saveToolButton_clicked();
 
