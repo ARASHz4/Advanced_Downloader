@@ -2,6 +2,7 @@
 #include "ui_downloaderwindow.h"
 
 #include <QDebug>
+#include <QtSql>
 
 DownloaderWindow::DownloaderWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,7 +10,7 @@ DownloaderWindow::DownloaderWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    tray = new QSystemTrayIcon(this);
+    ADTray = new QSystemTrayIcon(this);
 }
 
 DownloaderWindow::~DownloaderWindow()
@@ -53,9 +54,18 @@ void DownloaderWindow::Start()
         #endif
     }
 
-    tray->connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(RestoreWindowTrigger(QSystemTrayIcon::ActivationReason)));
-    tray->setIcon(QIcon(":/Icon/Icons/Small Icon.png"));
-    tray->show();
+    QList<QAction *> ActionList;
+    QMenu *TrayMenu = new QMenu(this);
+
+    ActionList <<ui->actionAbout <<TrayMenu->addSeparator() <<ui->actionAdd_a_download
+               <<TrayMenu->addSeparator() <<ui->actionRestoreWindow <<ui->actionExit;
+    TrayMenu->addActions(ActionList);
+
+    ADTray->connect(ADTray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this,
+                    SLOT(RestoreWindowTrigger(QSystemTrayIcon::ActivationReason)));
+    ADTray->setIcon(QIcon(":/Icon/Icons/Small Icon.png"));
+    ADTray->setContextMenu(TrayMenu);
+    ADTray->show();
 
     show();
 }
@@ -63,23 +73,6 @@ void DownloaderWindow::Start()
 void DownloaderWindow::Retranslate()
 {
     ui->retranslateUi(this);
-
-    QAction *AboutAction = new QAction(QIcon(":/Icon/Icons/About.png"), tr("About"), this);
-    AboutAction->connect(AboutAction, SIGNAL(triggered()), this, SLOT(on_actionAbout_triggered()));
-
-    QAction *RestoreAction = new QAction(QIcon(":/Icon/Icons/Restore.png"), tr("Restore"), this);
-    RestoreAction->connect(RestoreAction, SIGNAL(triggered()), this, SLOT(RestoreWindow()));
-
-    QAction *ExitAction = new QAction(QIcon(":/Icon/Icons/Exit.png"), tr("Exit"), this);
-    ExitAction->connect(ExitAction, SIGNAL(triggered()), this, SLOT(on_actionExit_triggered()));
-
-    QMenu *TrayMenu = new QMenu(this);
-    TrayMenu->addAction(AboutAction);
-    TrayMenu->addSeparator();
-    TrayMenu->addAction(RestoreAction);
-    TrayMenu->addAction(ExitAction);
-
-    tray->setContextMenu(TrayMenu);
 
     /*QList<QAction *> ActionList;
 
@@ -113,14 +106,18 @@ void DownloaderWindow::OpenArguments(QStringList Arguments)
 
 void DownloaderWindow::closeEvent (QCloseEvent *CloseEvant)
 {
-    SLSettings::SaveDownloaderWindow(this->geometry().x(), this->geometry().y(), this->geometry().width(),
-                                this->geometry().height(), toolBarArea(ui->mainToolBar), isMaximized(), isFullScreen());
-
     if(SLSettings::MinimizeToTray())
     {
         CloseEvant->ignore();
 
         this->hide();
+    }
+    else
+    {
+        ADTray->hide();
+
+        SLSettings::SaveDownloaderWindow(this->geometry().x(), this->geometry().y(), this->geometry().width(),
+                                    this->geometry().height(), toolBarArea(ui->mainToolBar), isMaximized(), isFullScreen());
     }
 }
 
@@ -128,13 +125,21 @@ void DownloaderWindow::RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW
 {
     if(RW == QSystemTrayIcon::Trigger)
     {
-        show();
+        on_actionRestoreWindow_triggered();
     }
 }
 
-void DownloaderWindow::RestoreWindow()
+void DownloaderWindow::on_actionRestoreWindow_triggered()
 {
-    show();
+    if(!isVisible())
+    {
+        show();
+        activateWindow();
+    }
+    else if (isMinimized())
+    {
+        setWindowState(windowState() & ~Qt::WindowMinimized);
+    }
 }
 
 void DownloaderWindow::on_actionAdd_a_download_triggered()
@@ -173,6 +178,67 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
             //on_actionStart_Download_triggered();
         }
     }
+
+    DatabaseDownload = QSqlDatabase::addDatabase("QSQLITE");
+    DatabaseDownload.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "DownloadList.db");
+
+    if(!DatabaseDownload.open())
+    {
+        QMessageBox msg(this);
+        msg.setIcon(QMessageBox::Critical);
+        msg.setWindowTitle(QApplication::applicationName() + " Error");
+        msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
+        msg.setText(tr("Can't load download list"));
+        msg.setStandardButtons(QMessageBox::Ok);
+        msg.setDefaultButton(QMessageBox::Ok);
+        msg.exec();
+    }
+
+    QSqlQuery qry;
+
+    qry.prepare("INSERT INTO DownloadList (DownloadAndress, DownloadSave, DownloadSize)"
+                " VALUES ('" + DownloadUrl + "', '" + DownloadFile + "', '" + DownloadSize + "')");
+    if(qry.exec())
+    {
+        qDebug("Inserted!");
+    }
+    else
+    {
+        qDebug() << qry.lastError();
+    }
+
+    qry.prepare("SELECT * FROM DownloadList");
+    if(!qry.exec())
+      qDebug() << qry.lastError();
+    else
+    {
+      qDebug( "Selected!" );
+    }
+
+//      QSqlRecord rec = qry.record();
+
+//      int cols = rec.count();
+
+//      for( int c=0; c<cols; c++ )
+//        qDebug() << QString( "Column %1: %2" ).arg( c ).arg( rec.fieldName(c) );
+
+//      for( int r=0; qry.next(); r++ )
+//        for( int c=0; c<cols; c++ )
+//          qDebug() << QString( "Row %1, %2: %3" ).arg( r ).arg( rec.fieldName(c) ).arg( qry.value(c).toString() );
+//    }
+
+
+//    qry.prepare( "SELECT firstname, lastname FROM names WHERE lastname = 'Roe'" );
+//    if( !qry.exec() )
+//      qDebug() << qry.lastError();
+//    else
+//    {
+//      qDebug( "Selected!" );
+
+//      QSqlRecord rec = qry.record();
+//    }
+
+
 }
 
 void DownloaderWindow::on_actionAbout_triggered()
@@ -260,7 +326,10 @@ void DownloaderWindow::on_actionStop_Download_triggered()
 
 void DownloaderWindow::on_actionExit_triggered()
 {
-    tray->hide();
+    ADTray->hide();
+
+    SLSettings::SaveDownloaderWindow(this->geometry().x(), this->geometry().y(), this->geometry().width(),
+                                this->geometry().height(), toolBarArea(ui->mainToolBar), isMaximized(), isFullScreen());
 
     exit(1);
 }

@@ -118,7 +118,6 @@ void addDownload::on_cancelPushButton_clicked()
     close();
 }
 
-
 void addDownload::on_saveToolButton_clicked()
 {
     QString SaveAddress = QFileDialog::getSaveFileName(this, tr("Save As"), ui->saveLineEdit->text() + "/"
@@ -128,4 +127,11 @@ void addDownload::on_saveToolButton_clicked()
     {
         ui->saveLineEdit->setText(SaveAddress);
     }
+}
+
+void addDownload::closeEvent (QCloseEvent *CloseEvant)
+{
+    CloseEvant->ignore();
+
+    this->hide();
 }

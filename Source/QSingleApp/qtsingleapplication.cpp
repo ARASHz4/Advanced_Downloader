@@ -349,6 +349,99 @@ void QtSingleApplication::StartApplication()
 
     SLSettings::LoadSettings();
 
+    if(!QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).exists())
+    {
+        if(!QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).cdUp())
+        {
+            QStringList CD (QFileInfo(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).absolutePath().split("/"));
+            QString Back;
+            for(int i=0; i<CD.count(); i++)
+            {
+                if(i == 0)
+                {
+                    Back = CD[i];
+                }
+               else
+                {
+                    Back = Back + "/" + CD[i];
+                }
+            }
+
+            QDir().mkdir(Back);
+            QDir().mkdir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+        }
+        else
+        {
+            QDir().mkdir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+        }
+    }
+
+    QSqlDatabase DatabaseDownload = QSqlDatabase::addDatabase("QSQLITE");
+    DatabaseDownload.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "DownloadList.db");
+
+    if(DatabaseDownload.open())
+    {
+        QSqlQuery qry;
+        qry.prepare("CREATE TABLE IF NOT EXISTS [DownloadList] ([IDDL] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,"
+                    " [DownloadAndress] VARCHAR NOT NULL, [DownloadSave] VARCHAR NOT NULL, [DownloadSize] VARCHAR NOT NULL)");
+        if(!qry.exec())
+        {
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Critical);
+            msg.setWindowTitle(QApplication::applicationName() + " Error");
+            msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
+            msg.setText(tr("Can't load download list"));
+            msg.setInformativeText(qry.lastError().text());
+            msg.setStandardButtons(QMessageBox::Ok);
+            msg.setDefaultButton(QMessageBox::Ok);
+            msg.exec();
+        }
+
+        qry.prepare("SELECT * FROM DownloadList");
+        if(!qry.exec())
+        {
+            qDebug() << qry.lastError();
+        }
+        else
+        {
+          qDebug( "Selected!" );
+        }
+
+        QSqlRecord rec = qry.record();
+
+        int cols = rec.count();
+
+        for( int c=0; c<cols; c++ )
+          qDebug() << QString( "Column %1: %2" ).arg( c ).arg( rec.fieldName(c) );
+
+        for( int r=0; qry.next(); r++ )
+          for( int c=0; c<cols; c++ )
+            qDebug() << QString( "Row %1, %2: %3" ).arg( r ).arg( rec.fieldName(c) ).arg( qry.value(c).toString() );
+
+
+        qry.prepare( "SELECT firstname, lastname FROM names WHERE lastname = 'Roe'" );
+        if( !qry.exec() )
+          qDebug() << qry.lastError();
+        else
+        {
+          qDebug( "Selected!" );
+
+          QSqlRecord rec = qry.record();
+        }
+    }
+    else
+    {
+        QMessageBox msg;
+        msg.setIcon(QMessageBox::Critical);
+        msg.setWindowTitle(QApplication::applicationName() + " Error");
+        msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
+        msg.setText(tr("Can't load download list"));
+        msg.setInformativeText(DatabaseDownload.lastError().text());
+        msg.setStandardButtons(QMessageBox::Ok);
+        msg.setDefaultButton(QMessageBox::Ok);
+        msg.exec();
+    }
+
     downloaderwindow.Start();
 
     #if !defined(Q_OS_MAC)

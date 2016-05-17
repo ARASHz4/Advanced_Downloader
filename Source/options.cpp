@@ -235,7 +235,11 @@ void Options::RestoreDefaultsButton()
     Load();
 }
 
-void Options::closeEvent (QCloseEvent *)
+void Options::closeEvent (QCloseEvent *CloseEvant)
 {
     SLSettings::SaveOptionWindow(this->geometry().x(), this->geometry().y(), this->geometry().width(), this->geometry().height());
+
+    CloseEvant->ignore();
+
+    this->hide();
 }

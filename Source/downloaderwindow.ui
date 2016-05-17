@@ -138,6 +138,7 @@
    <addaction name="actionAdd_a_download"/>
    <addaction name="actionStart_Download"/>
    <addaction name="actionStop_Download"/>
+   <addaction name="actionDelete"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
@@ -201,6 +202,20 @@
    </property>
    <property name="text">
     <string>Stop Download</string>
+   </property>
+  </action>
+  <action name="actionRestoreWindow">
+   <property name="icon">
+    <iconset resource="ADResource.qrc">
+     <normaloff>:/Icon/Icons/Restore.png</normaloff>:/Icon/Icons/Restore.png</iconset>
+   </property>
+   <property name="text">
+    <string>Restore</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
    </property>
   </action>
  </widget>

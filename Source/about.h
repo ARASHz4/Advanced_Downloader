@@ -28,6 +28,8 @@ private slots:
 
     void mouseDoubleClickEvent(QMouseEvent *);
 
+    void closeEvent (QCloseEvent *CloseEvant);
+
 private:
     Ui::About *ui;
 

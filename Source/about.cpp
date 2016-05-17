@@ -72,3 +72,10 @@ void About::mouseDoubleClickEvent(QMouseEvent *)
         ds=false;
     }
 }
+
+void About::closeEvent (QCloseEvent *CloseEvant)
+{
+    CloseEvant->ignore();
+
+    this->hide();
+}

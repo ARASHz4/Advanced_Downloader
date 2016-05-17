@@ -6,6 +6,7 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QTranslator>
+#include <QCloseEvent>
 
 namespace Ui {
 class Options;
@@ -41,7 +42,7 @@ private slots:
 
     void RestoreDefaultsButton();
 
-    void closeEvent (QCloseEvent *);
+    void closeEvent (QCloseEvent *CloseEvant);
 
 };
 

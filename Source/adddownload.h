@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QFileIconProvider>
 #include <QStandardPaths>
+#include <QCloseEvent>
 
 namespace Ui {
 class addDownload;
@@ -36,6 +37,8 @@ private slots:
     void on_cancelPushButton_clicked();
 
     void on_saveToolButton_clicked();
+
+    void closeEvent (QCloseEvent *CloseEvant);
 
 private:
     Ui::addDownload *ui;

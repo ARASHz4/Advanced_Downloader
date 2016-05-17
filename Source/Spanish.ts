@@ -105,65 +105,73 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.ui" line="149"/>
-        <location filename="downloaderwindow.ui" line="152"/>
-        <location filename="downloaderwindow.cpp" line="54"/>
+        <location filename="downloaderwindow.ui" line="150"/>
+        <location filename="downloaderwindow.ui" line="153"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.ui" line="157"/>
+        <location filename="downloaderwindow.ui" line="158"/>
         <source>Add a download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.ui" line="166"/>
-        <location filename="downloaderwindow.cpp" line="61"/>
+        <location filename="downloaderwindow.ui" line="167"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.ui" line="171"/>
+        <location filename="downloaderwindow.ui" line="172"/>
         <source>From file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.ui" line="176"/>
+        <location filename="downloaderwindow.ui" line="177"/>
         <source>To file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.ui" line="185"/>
+        <location filename="downloaderwindow.ui" line="186"/>
         <source>Options</source>
         <translation>Opciones</translation>
     </message>
     <message>
-        <location filename="downloaderwindow.ui" line="194"/>
+        <location filename="downloaderwindow.ui" line="195"/>
         <source>Start Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.ui" line="203"/>
+        <location filename="downloaderwindow.ui" line="204"/>
         <source>Stop Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.cpp" line="57"/>
+        <location filename="downloaderwindow.ui" line="213"/>
         <source>Restore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.cpp" line="243"/>
+        <location filename="downloaderwindow.ui" line="218"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="downloaderwindow.cpp" line="191"/>
+        <source>Can&apos;t load download list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="downloaderwindow.cpp" line="310"/>
         <source>Can&apos;t download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.cpp" line="244"/>
+        <location filename="downloaderwindow.cpp" line="311"/>
         <source>Can&apos;t download </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="downloaderwindow.cpp" line="247"/>
+        <location filename="downloaderwindow.cpp" line="314"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -206,39 +214,44 @@
         <translation>Minimizar en la bandeja al cerrar</translation>
     </message>
     <message>
-        <location filename="options.ui" line="159"/>
+        <location filename="options.ui" line="134"/>
+        <source>Launch application when system starts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options.ui" line="172"/>
         <location filename="options.cpp" line="55"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="options.ui" line="173"/>
-        <location filename="options.cpp" line="64"/>
-        <location filename="options.cpp" line="237"/>
+        <location filename="options.ui" line="186"/>
+        <location filename="options.cpp" line="65"/>
+        <location filename="options.cpp" line="223"/>
         <source>Language</source>
         <translation>Idioma</translation>
     </message>
     <message>
         <location filename="options.cpp" line="34"/>
-        <location filename="options.cpp" line="233"/>
+        <location filename="options.cpp" line="219"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
         <location filename="options.cpp" line="35"/>
-        <location filename="options.cpp" line="234"/>
+        <location filename="options.cpp" line="220"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
         <location filename="options.cpp" line="36"/>
-        <location filename="options.cpp" line="235"/>
+        <location filename="options.cpp" line="221"/>
         <source>Apply</source>
         <translation>Aplicar</translation>
     </message>
     <message>
         <location filename="options.cpp" line="37"/>
-        <location filename="options.cpp" line="236"/>
+        <location filename="options.cpp" line="222"/>
         <source>Restore Defaults</source>
         <translation>Restaurar predeterminados</translation>
     </message>
@@ -287,7 +300,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="adddownload.cpp" line="124"/>
+        <location filename="adddownload.cpp" line="123"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>

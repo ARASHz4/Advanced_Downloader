@@ -15,6 +15,7 @@
 #include <QProgressBar>
 #include <QMessageBox>
 #include <QSystemTrayIcon>
+#include <QtSql>
 
 namespace Ui {
 class DownloaderWindow;
@@ -39,7 +40,9 @@ private:
 
     int currentDownload;
 
-    QSystemTrayIcon *tray;
+    QSystemTrayIcon *ADTray;
+
+    QSqlDatabase DatabaseDownload;
 
 private slots:
     void Retranslate();
@@ -48,7 +51,7 @@ private slots:
 
     void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
 
-    void RestoreWindow();
+    void on_actionRestoreWindow_triggered();
 
     void on_actionAdd_a_download_triggered();
 
