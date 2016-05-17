@@ -1,6 +1,6 @@
 //Only For Wondows
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef ADWINDETAILS_H
+#define ADWINDETAILS_H
 
 #define VER_FILEVERSION             1,0,0
 #define VER_FILEVERSION_STR         "1.0.0"
@@ -19,4 +19,4 @@
 
 #define VER_COMPANYDOMAIN_STR       "ARASHz4.com"
 
-#endif // VERSION_H
+#endif // ADWINDETAILS_H

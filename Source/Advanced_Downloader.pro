@@ -21,6 +21,7 @@ mac: ICON = Mac/ADIcon.icns
 SOURCES += main.cpp\
     downloaderwindow.cpp \
     about.cpp \
+    options.cpp \
     slsettings.cpp \
     downloader.cpp \
     fileicon.cpp \
@@ -31,11 +32,11 @@ SOURCES += main.cpp\
     QSingleApp/qtlockedfile_unix.cpp \
     QSingleApp/qtlockedfile_win.cpp \
     QSingleApp/qtsingleapplication.cpp \
-    QSingleApp/qtsinglecoreapplication.cpp \
-    options.cpp
+    QSingleApp/qtsinglecoreapplication.cpp
 
 HEADERS += downloaderwindow.h \
     about.h \
+    options.h \
     slsettings.h \
     downloader.h \
     fileicon.h \
@@ -44,8 +45,7 @@ HEADERS += downloaderwindow.h \
     QSingleApp/qtlocalpeer.h \
     QSingleApp/qtlockedfile.h \
     QSingleApp/qtsingleapplication.h \
-    QSingleApp/qtsinglecoreapplication.h \
-    options.h
+    QSingleApp/qtsinglecoreapplication.h
 
 FORMS += downloaderwindow.ui \
     about.ui \
@@ -61,4 +61,4 @@ DISTFILES += \
     Mac/ADInfo.plist \
     Windows/ADIcon.ico \
     Windows/ADWinRes.rc \
-    Windows/version.h
+    Windows/ADWinDetails.h
