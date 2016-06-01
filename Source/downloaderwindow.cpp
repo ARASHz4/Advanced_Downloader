@@ -238,15 +238,12 @@ void DownloaderWindow::on_actionStart_Download_triggered()
 
         if(!DownloadListUrl[currentDownload].contains("http://") && !DownloadListUrl[currentDownload].contains("https://"))
         {
-            qDebug()<<"okz5";
             Url = "http://" + DownloadListUrl[currentDownload];
         }
         else
         {
             Url = DownloadListUrl[currentDownload];
         }
-
-         qDebug()<<Url;
 
         FileDownload = new Downloader(Url, this);
 
