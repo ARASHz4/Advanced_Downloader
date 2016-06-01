@@ -34,6 +34,8 @@ private slots:
 
     void fileDownloaded();
 
+    void sslErrors(const QList<QSslError> &sslErrors);
+
 private:
     QNetworkAccessManager *DownloadManager;
     QNetworkReply *reply;

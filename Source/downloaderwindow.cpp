@@ -1,14 +1,20 @@
 #include "downloaderwindow.h"
 #include "ui_downloaderwindow.h"
+#include "sldownloadlist.h"
+
+#include <QAbstractItemModel>
 
 #include <QDebug>
-#include <QtSql>
+#include <QWinTaskbarButton>
+#include <QWinTaskbarProgress>
 
 DownloaderWindow::DownloaderWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::DownloaderWindow)
 {
     ui->setupUi(this);
+
+    ui->downloadTreeWidget->hideColumn(4);
 
     ADTray = new QSystemTrayIcon(this);
 }
@@ -65,6 +71,20 @@ void DownloaderWindow::Start()
                     SLOT(RestoreWindowTrigger(QSystemTrayIcon::ActivationReason)));
     ADTray->setIcon(QIcon(":/Icon/Icons/Small Icon.png"));
     ADTray->setContextMenu(TrayMenu);
+
+    std::tie(downloadItemList, DownloadListUrl, DownloadListFile, DownloadListSize, DownloadListStatus) = SLDownloadList::LoadDBDownloadList();
+
+    ui->downloadTreeWidget->addTopLevelItems(downloadItemList);
+
+    for(int i=0; i<downloadItemList.count(); i++)
+    {
+        QProgressBar *newProgressBar = new QProgressBar;
+        newProgressBar->setValue(DownloadListStatus[i]);
+        newProgressBar->setGeometry(0,0,50,3);
+
+        ui->downloadTreeWidget->setItemWidget(downloadItemList[i], 3, newProgressBar);
+    }
+
     ADTray->show();
 
     show();
@@ -123,7 +143,7 @@ void DownloaderWindow::closeEvent (QCloseEvent *CloseEvant)
 
 void DownloaderWindow::RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW)
 {
-    if(RW == QSystemTrayIcon::Trigger)
+    if(RW == QSystemTrayIcon::DoubleClick)
     {
         on_actionRestoreWindow_triggered();
     }
@@ -140,6 +160,11 @@ void DownloaderWindow::on_actionRestoreWindow_triggered()
     {
         setWindowState(windowState() & ~Qt::WindowMinimized);
     }
+
+    if (!isActiveWindow())
+    {
+        activateWindow();
+    }
 }
 
 void DownloaderWindow::on_actionAdd_a_download_triggered()
@@ -148,9 +173,10 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
     ADD.exec();
 
     QString DownloadUrl, DownloadFile, DownloadSize;
+    QPixmap DownloadIcon;
     bool startDownload;
 
-    std::tie(DownloadUrl, DownloadFile, DownloadSize, startDownload) = ADD.Return();
+    std::tie(DownloadUrl, DownloadFile, DownloadSize, DownloadIcon, startDownload) = ADD.Return();
 
     if(!DownloadUrl.isEmpty() && !DownloadFile.isEmpty())
     {
@@ -160,18 +186,25 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
 
         qDebug()<<DownloadUrl;
 
-        QTreeWidgetItem *item = new QTreeWidgetItem();
-        item->setText(0, QUrl(DownloadUrl).fileName());
-        item->setText(1, DownloadSize);
-        ui->downloadTreeWidget->addTopLevelItem(item);
+        QTreeWidgetItem *newItem = new QTreeWidgetItem();
+        newItem->setText(4, QString::number(downloadItemList.count()));
+        newItem->setText(0, QUrl(DownloadUrl).fileName());
+        newItem->setIcon(0, QIcon(DownloadIcon));
+        newItem->setText(1, DownloadSize);
 
-        QProgressBar *newPrProgressBar = new QProgressBar;
+        ui->downloadTreeWidget->addTopLevelItem(newItem);
 
-        downloadProgressBarList << newPrProgressBar;
+        qDebug()<<downloadItemList.count();
 
-        ui->downloadTreeWidget->setItemWidget(item, 3, newPrProgressBar);
+        downloadItemList << newItem;
 
-        newPrProgressBar->setValue(0);
+        QProgressBar *newProgressBar = new QProgressBar;
+
+        ui->downloadTreeWidget->setItemWidget(newItem, 3, newProgressBar);
+
+        newProgressBar->setValue(0);
+
+        qDebug()<<downloadItemList.count();
 
         if(startDownload)
         {
@@ -179,66 +212,7 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
         }
     }
 
-    DatabaseDownload = QSqlDatabase::addDatabase("QSQLITE");
-    DatabaseDownload.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "DownloadList.db");
-
-    if(!DatabaseDownload.open())
-    {
-        QMessageBox msg(this);
-        msg.setIcon(QMessageBox::Critical);
-        msg.setWindowTitle(QApplication::applicationName() + " Error");
-        msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
-        msg.setText(tr("Can't load download list"));
-        msg.setStandardButtons(QMessageBox::Ok);
-        msg.setDefaultButton(QMessageBox::Ok);
-        msg.exec();
-    }
-
-    QSqlQuery qry;
-
-    qry.prepare("INSERT INTO DownloadList (DownloadAndress, DownloadSave, DownloadSize)"
-                " VALUES ('" + DownloadUrl + "', '" + DownloadFile + "', '" + DownloadSize + "')");
-    if(qry.exec())
-    {
-        qDebug("Inserted!");
-    }
-    else
-    {
-        qDebug() << qry.lastError();
-    }
-
-    qry.prepare("SELECT * FROM DownloadList");
-    if(!qry.exec())
-      qDebug() << qry.lastError();
-    else
-    {
-      qDebug( "Selected!" );
-    }
-
-//      QSqlRecord rec = qry.record();
-
-//      int cols = rec.count();
-
-//      for( int c=0; c<cols; c++ )
-//        qDebug() << QString( "Column %1: %2" ).arg( c ).arg( rec.fieldName(c) );
-
-//      for( int r=0; qry.next(); r++ )
-//        for( int c=0; c<cols; c++ )
-//          qDebug() << QString( "Row %1, %2: %3" ).arg( r ).arg( rec.fieldName(c) ).arg( qry.value(c).toString() );
-//    }
-
-
-//    qry.prepare( "SELECT firstname, lastname FROM names WHERE lastname = 'Roe'" );
-//    if( !qry.exec() )
-//      qDebug() << qry.lastError();
-//    else
-//    {
-//      qDebug( "Selected!" );
-
-//      QSqlRecord rec = qry.record();
-//    }
-
-
+    SLDownloadList::SaveDBDownloadList(DownloadUrl, DownloadFile, DownloadSize);
 }
 
 void DownloaderWindow::on_actionAbout_triggered()
@@ -259,7 +233,6 @@ void DownloaderWindow::on_actionStart_Download_triggered()
 {
     if(ui->downloadTreeWidget->currentIndex().row() >= 0)
     {
-        currentDownload = ui->downloadTreeWidget->currentIndex().row();
 
         QUrl Url;
 
@@ -282,9 +255,16 @@ void DownloaderWindow::on_actionStart_Download_triggered()
 
 void DownloaderWindow::SetProgress()
 {
-    ui->downloadTreeWidget->itemAt(currentDownload,2)->setText(2,FileDownload->getDownloadSpeed());
-    downloadProgressBarList[currentDownload]->setMaximum(FileDownload->getDLTotal());
-    downloadProgressBarList[currentDownload]->setValue(FileDownload->getDLRead());
+    downloadItemList[currentDownload]->setText(2, FileDownload->getDownloadSpeed());
+
+    QProgressBar *DLProgressBar = new QProgressBar;
+
+    ui->downloadTreeWidget->setItemWidget(downloadItemList[currentDownload], 3, DLProgressBar);
+
+    qDebug()<<FileDownload->getDLTotal()/100;
+
+    DLProgressBar->setMaximum(FileDownload->getDLTotal());
+    DLProgressBar->setValue(FileDownload->getDLRead());
 }
 
 void DownloaderWindow::Download_Completed()
@@ -303,7 +283,9 @@ void DownloaderWindow::Download_Completed()
 
 void DownloaderWindow::showDownloadError()
 {
-    downloadProgressBarList[currentDownload]->setValue(0);
+    QProgressBar *DLProgressBar = new QProgressBar;
+    ui->downloadTreeWidget->setItemWidget(downloadItemList[currentDownload], 3, DLProgressBar);
+    DLProgressBar->setValue(0);
 
     QMessageBox msg(this);
     msg.setIcon(QMessageBox::Warning);
@@ -332,4 +314,27 @@ void DownloaderWindow::on_actionExit_triggered()
                                 this->geometry().height(), toolBarArea(ui->mainToolBar), isMaximized(), isFullScreen());
 
     exit(1);
+}
+
+void DownloaderWindow::on_actionDelete_triggered()
+{
+    QWinTaskbarButton *button = new QWinTaskbarButton(this);
+    button->setWindow(this->windowHandle());
+    QWinTaskbarProgress *progress = button->progress();
+    progress->setVisible(true);
+    progress->setValue(50);
+    progress->show();
+}
+
+void DownloaderWindow::on_downloadTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+    currentDownload = current->data(4,0).toInt();
+}
+
+void DownloaderWindow::on_downloadTreeWidget_itemDoubleClicked(QTreeWidgetItem *item)
+{
+    DownlloadProperties DLPD(this);
+    DLPD.showProperties(DownloadListUrl[item->data(4,0).toInt()], DownloadListFile[item->data(4,0).toInt()], item->data(1,0).toString(),
+                        QString::number(5) + "%");
+    DLPD.exec();
 }

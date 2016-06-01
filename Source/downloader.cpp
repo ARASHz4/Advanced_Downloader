@@ -6,13 +6,21 @@ Downloader::Downloader(QUrl Url, QObject *parent) : QObject(parent)
 {
     DownloadManager = new QNetworkAccessManager(this);
 
-    reply =  DownloadManager->get(QNetworkRequest(Url));
+    QNetworkRequest *DLReq = new QNetworkRequest();
+
+    QSslConfiguration configSsl = QSslConfiguration::defaultConfiguration();
+    configSsl.setProtocol(QSsl::AnyProtocol);
+    DLReq->setUrl(Url);
+    DLReq->setSslConfiguration(configSsl);
+
+    reply =  DownloadManager->get(QNetworkRequest(*DLReq));
 
     DownloadTime.start();
 
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(updateProgress(qint64, qint64)));
     connect(reply, SIGNAL(finished()), this, SLOT (fileDownloaded()));
+    connect(reply, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT (sslErrors(const QList<QSslError>&)));
 }
 
 Downloader::~Downloader()
@@ -30,6 +38,7 @@ void Downloader::error(QNetworkReply::NetworkError)
 
 QString Downloader::getDLE() const
 {
+    qDebug()<<DLE;
     return DLE;
 }
 
@@ -95,4 +104,15 @@ void Downloader::cancelDownload()
 QByteArray Downloader::downloadedData() const
 {
     return DownloadedData;
+}
+
+void Downloader::sslErrors(const QList<QSslError> &sslErrors)
+{
+    qDebug()<<"arash";
+#ifndef QT_NO_SSL
+    foreach (const QSslError &error, sslErrors)
+        fprintf(stderr, "SSL error: %s\n", qPrintable(error.errorString()));
+#else
+    Q_UNUSED(sslErrors);
+#endif
 }

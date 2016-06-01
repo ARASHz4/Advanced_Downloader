@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>762</width>
-    <height>450</height>
+    <width>675</width>
+    <height>452</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,12 +39,18 @@
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
       <property name="indentation">
        <number>0</number>
       </property>
       <property name="sortingEnabled">
        <bool>true</bool>
       </property>
+      <attribute name="headerDefaultSectionSize">
+       <number>130</number>
+      </attribute>
       <column>
        <property name="text">
         <string>File Name</string>
@@ -65,6 +71,17 @@
         <string>Status</string>
        </property>
       </column>
+      <column>
+       <property name="text">
+        <string notr="true">IDDL</string>
+       </property>
+       <property name="toolTip">
+        <string notr="true"/>
+       </property>
+       <property name="statusTip">
+        <string notr="true"/>
+       </property>
+      </column>
      </widget>
     </item>
    </layout>
@@ -74,7 +91,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>762</width>
+     <width>675</width>
      <height>21</height>
     </rect>
    </property>
@@ -152,6 +169,9 @@
    <property name="toolTip">
     <string>Exit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="actionAdd_a_download">
    <property name="text">
@@ -165,6 +185,9 @@
    </property>
    <property name="text">
     <string>About</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
    </property>
   </action>
   <action name="actionFrom_file">
@@ -184,6 +207,9 @@
    </property>
    <property name="text">
     <string>Options</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+O</string>
    </property>
   </action>
   <action name="actionStart_Download">
@@ -216,6 +242,9 @@
   <action name="actionDelete">
    <property name="text">
     <string>Delete</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
    </property>
   </action>
  </widget>

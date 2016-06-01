@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT += core gui network sql
+win32: QT += winextras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,7 +33,9 @@ SOURCES += main.cpp\
     QSingleApp/qtlockedfile_unix.cpp \
     QSingleApp/qtlockedfile_win.cpp \
     QSingleApp/qtsingleapplication.cpp \
-    QSingleApp/qtsinglecoreapplication.cpp
+    QSingleApp/qtsinglecoreapplication.cpp \
+    sldownloadlist.cpp \
+    downlloadproperties.cpp
 
 HEADERS += downloaderwindow.h \
     about.h \
@@ -45,12 +48,15 @@ HEADERS += downloaderwindow.h \
     QSingleApp/qtlocalpeer.h \
     QSingleApp/qtlockedfile.h \
     QSingleApp/qtsingleapplication.h \
-    QSingleApp/qtsinglecoreapplication.h
+    QSingleApp/qtsinglecoreapplication.h \
+    sldownloadlist.h \
+    downlloadproperties.h
 
 FORMS += downloaderwindow.ui \
     about.ui \
     adddownload.ui \
-    options.ui
+    options.ui \
+    downlloadproperties.ui
 
 RESOURCES += \
     ADResource.qrc
@@ -59,6 +65,7 @@ DISTFILES += \
     Linux/AdvancedDownloader.desktop \
     Linux/ADIcon.png \
     Mac/ADInfo.plist \
+    Mac/ADIcon.icns \
     Windows/ADIcon.ico \
     Windows/ADWinRes.rc \
     Windows/ADWinDetails.h

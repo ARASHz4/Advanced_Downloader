@@ -2,9 +2,17 @@
 #define QTSINGLEAPPLICATION_H
 
 #include "downloaderwindow.h"
+#include "qtlocalpeer.h"
+#include "slsettings.h"
+#include "sldownloadlist.h"
 
 #include <QApplication>
 #include <QTranslator>
+#include <cstdlib>
+#include <QWidget>
+#include <QFileOpenEvent>
+#include <QMessageBox>
+#include <QFileInfo>
 
 class QtLocalPeer;
 

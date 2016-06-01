@@ -1,32 +1,43 @@
 #include "fileicon.h"
 
-FileIcon::FileIcon(QString suffix, QObject *parent) : QObject(parent)
+#include <QDebug>
+#include <QLabel>
+
+FileIcon::FileIcon(QObject *parent) : QObject(parent)
 {
-    suffixIcon = suffix;
+
 }
 
-QPixmap FileIcon::getPixmap() const
+QPixmap FileIcon::getPixmap(QString suffix, int size)
 {
     QString AddressFileIcon = QString(QStandardPaths::writableLocation(QStandardPaths::TempLocation)
-                                                     + "/ADIF" + QUuid::createUuid().toString() + "." + suffixIcon).replace("//","/");
-
-    QFile(AddressFileIcon).open(QIODevice::ReadWrite);
-
+                                                     + "/ADIF" + QUuid::createUuid().toString() + "." + suffix).replace("//","/");
     QFileIconProvider iconf;
+    QPixmap fileIcon;
 
-    return iconf.icon(QFileInfo(AddressFileIcon)).pixmap(QSize(32, 32));
-    QFile(AddressFileIcon).remove();
+    if(QFile(AddressFileIcon).open(QIODevice::ReadWrite))
+    {
+        fileIcon = iconf.icon(QFileInfo(AddressFileIcon)).pixmap(QSize(size, size));
+
+        QFile(AddressFileIcon).remove();
+    }
+
+    return fileIcon;
 }
 
-QIcon FileIcon::getIcon() const
+QIcon FileIcon::getIcon(QString suffix)
 {
     QString AddressFileIcon = QString(QStandardPaths::writableLocation(QStandardPaths::TempLocation)
-                                                     + "/ADIF" + QUuid::createUuid().toString() + "." + suffixIcon).replace("//","/");
-
-    QFile(AddressFileIcon).open(QIODevice::ReadWrite);
-
+                                                     + "/ADIF" + QUuid::createUuid().toString() + "." + suffix).replace("//","/");
     QFileIconProvider iconf;
+    QIcon fileIcon;
 
-    return iconf.icon(QFileInfo(AddressFileIcon));
-    QFile(AddressFileIcon).remove();
+    if(QFile(AddressFileIcon).open(QIODevice::ReadWrite))
+    {
+        fileIcon = iconf.icon(QFileInfo(AddressFileIcon));
+
+        QFile(AddressFileIcon).remove();
+    }
+
+    return fileIcon;
 }

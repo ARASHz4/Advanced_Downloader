@@ -6,7 +6,6 @@
 
 #include <QDialog>
 #include <QFileDialog>
-#include <QFileIconProvider>
 #include <QStandardPaths>
 #include <QCloseEvent>
 
@@ -23,7 +22,7 @@ public:
     ~addDownload();
 
 public slots:
-    std::tuple<QString, QString, QString, bool> Return();
+    std::tuple<QString, QString, QString, QPixmap, bool> Return();
 
 private slots:
     void on_OKEditPushButton_clicked();

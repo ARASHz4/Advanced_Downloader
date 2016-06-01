@@ -30,9 +30,7 @@ void addDownload::on_OKEditPushButton_clicked()
             ui->saveLineEdit->setText(QString(QFileInfo(ui->saveLineEdit->text()).path() + "/"
                                               + QUrl(ui->addressLineEdit->text()).fileName()).replace("//", "/"));
 
-            FileIcon *Icon = new FileIcon(QFileInfo(ui->saveLineEdit->text()).suffix(), this);
-
-            ui->fileIconLabel->setPixmap(QPixmap(Icon->getPixmap()));
+            ui->fileIconLabel->setPixmap(QPixmap(FileIcon::getPixmap(QFileInfo(QUrl(ui->addressLineEdit->text()).fileName()).suffix(), 32)));
 
             QUrl Url;
 
@@ -108,9 +106,9 @@ void addDownload::on_addDlListPushButton_clicked()
     }
 }
 
-std::tuple<QString, QString, QString, bool> addDownload::Return()
+std::tuple<QString, QString, QString, QPixmap, bool> addDownload::Return()
 {
-    return std::make_tuple(DLUrl, DLFile, DLSize, startDownload);
+    return std::make_tuple(DLUrl, DLFile, DLSize, QPixmap(FileIcon::getPixmap(QFileInfo(QUrl(DLUrl).fileName()).suffix(), 16)), startDownload);
 }
 
 void addDownload::on_cancelPushButton_clicked()

@@ -11,11 +11,11 @@ class FileIcon : public QObject
 {
     Q_OBJECT
 public:
-    explicit FileIcon(QString suffix, QObject *parent = 0);
+    explicit FileIcon(QObject *parent = 0);
 
-    QIcon getIcon() const;
+    static QPixmap getPixmap(QString suffix, int size);
 
-    QPixmap getPixmap() const;
+    static QIcon getIcon(QString suffix);
 
 signals:
 

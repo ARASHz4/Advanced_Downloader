@@ -6,6 +6,7 @@
 #include "options.h"
 #include "about.h"
 #include "adddownload.h"
+#include "downlloadproperties.h"
 
 #include <QMainWindow>
 #include <QProgressBar>
@@ -34,9 +35,11 @@ private:
 
     Downloader *FileDownload;
 
-    QList<QProgressBar *> downloadProgressBarList;
+    QList<QTreeWidgetItem *> downloadItemList;
 
     QStringList DownloadListUrl, DownloadListFile, DownloadListSize;
+
+    QList<int> DownloadListStatus;
 
     int currentDownload;
 
@@ -70,6 +73,12 @@ private slots:
     void on_actionStop_Download_triggered();
 
     void on_actionExit_triggered();
+
+    void on_actionDelete_triggered();
+
+    void on_downloadTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+
+    void on_downloadTreeWidget_itemDoubleClicked(QTreeWidgetItem *item);
 
 public slots:
     void Start();
