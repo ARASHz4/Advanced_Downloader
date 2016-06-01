@@ -6,14 +6,7 @@ Downloader::Downloader(QUrl Url, QObject *parent) : QObject(parent)
 {
     DownloadManager = new QNetworkAccessManager(this);
 
-    QNetworkRequest *DLReq = new QNetworkRequest();
-
-    QSslConfiguration configSsl = QSslConfiguration::defaultConfiguration();
-    configSsl.setProtocol(QSsl::AnyProtocol);
-    DLReq->setUrl(Url);
-    DLReq->setSslConfiguration(configSsl);
-
-    reply =  DownloadManager->get(QNetworkRequest(*DLReq));
+    reply =  DownloadManager->get(QNetworkRequest(Url));
 
     DownloadTime.start();
 

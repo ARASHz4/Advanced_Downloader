@@ -34,7 +34,7 @@ void addDownload::on_OKEditPushButton_clicked()
 
             QUrl Url;
 
-            if(!ui->addressLineEdit->text().contains("http://"))
+            if(!ui->addressLineEdit->text().contains("http://") && !ui->addressLineEdit->text().contains("https://"))
             {
                 Url = "http://" + ui->addressLineEdit->text();
             }
