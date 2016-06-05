@@ -2,23 +2,28 @@
 
 #include <QDebug>
 
-Downloader::Downloader(QUrl Url, QObject *parent) : QObject(parent)
+Downloader::Downloader(QObject *parent) : QObject(parent)
 {
     DownloadManager = new QNetworkAccessManager(this);
+}
 
+Downloader::~Downloader()
+{
+
+}
+
+void Downloader::start(QUrl Url, int CDL)
+{
     reply =  DownloadManager->get(QNetworkRequest(Url));
+
+    CDownload = CDL;
 
     DownloadTime.start();
 
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(updateProgress(qint64, qint64)));
     connect(reply, SIGNAL(finished()), this, SLOT (fileDownloaded()));
-    connect(reply, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT (sslErrors(const QList<QSslError>&)));
-}
-
-Downloader::~Downloader()
-{
-
+    connect(reply, SIGNAL(readyRead()), this, SLOT(downloadReadyRead()));
 }
 
 void Downloader::error(QNetworkReply::NetworkError)
@@ -37,6 +42,8 @@ QString Downloader::getDLE() const
 
 void Downloader::updateProgress(qint64 read, qint64 total)
 {
+    qDebug()<<CDownload;
+
     double speed = read * 1000.0 / DownloadTime.elapsed();
 
     QString unit;
@@ -85,11 +92,18 @@ void Downloader::fileDownloaded()
     emit downloaded();
 }
 
+int Downloader::getCDownload() const
+{
+    return CDownload;
+}
+
 void Downloader::cancelDownload()
 {
     disconnect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
     disconnect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(updateProgress(qint64, qint64)));
     disconnect(reply, SIGNAL(finished()), this, SLOT (fileDownloaded()));
+
+    //mFile->write(mCurrentReply->readAll());
 
     reply->abort();
 }
@@ -97,15 +111,4 @@ void Downloader::cancelDownload()
 QByteArray Downloader::downloadedData() const
 {
     return DownloadedData;
-}
-
-void Downloader::sslErrors(const QList<QSslError> &sslErrors)
-{
-    qDebug()<<"arash";
-#ifndef QT_NO_SSL
-    foreach (const QSslError &error, sslErrors)
-        fprintf(stderr, "SSL error: %s\n", qPrintable(error.errorString()));
-#else
-    Q_UNUSED(sslErrors);
-#endif
 }

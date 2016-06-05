@@ -154,6 +154,7 @@
    </attribute>
    <addaction name="actionAdd_a_download"/>
    <addaction name="actionStart_Download"/>
+   <addaction name="actionPauseResume_Download"/>
    <addaction name="actionStop_Download"/>
    <addaction name="actionDelete"/>
   </widget>
@@ -245,6 +246,11 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="actionPauseResume_Download">
+   <property name="text">
+    <string>Pause Download</string>
    </property>
   </action>
  </widget>

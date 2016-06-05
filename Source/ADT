@@ -3,9 +3,12 @@ SOURCES += downloaderwindow.cpp \
     options.cpp \
     downloader.cpp \
     filesize.cpp \
-    adddownload.cpp
+    adddownload.cpp \
+	downlloadproperties.cpp
 
 FORMS += downloaderwindow.ui \
     about.ui \
+    adddownload.ui \
     options.ui \
-    adddownload.ui
+    downlloadproperties.ui
+	

@@ -2,11 +2,8 @@
 #include "ui_downloaderwindow.h"
 #include "sldownloadlist.h"
 
-#include <QAbstractItemModel>
-
 #include <QDebug>
-#include <QWinTaskbarButton>
-#include <QWinTaskbarProgress>
+
 
 DownloaderWindow::DownloaderWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -72,17 +69,17 @@ void DownloaderWindow::Start()
     ADTray->setIcon(QIcon(":/Icon/Icons/Small Icon.png"));
     ADTray->setContextMenu(TrayMenu);
 
-    std::tie(downloadItemList, DownloadListUrl, DownloadListFile, DownloadListSize, DownloadListStatus) = SLDownloadList::LoadDBDownloadList();
+    std::tie(DownloadIDDBList, DownloadItemList, DownloadListUrl, DownloadListFile, DownloadListSize, DownloadListStatus) = SLDownloadList::LoadDBDownloadList();
 
-    ui->downloadTreeWidget->addTopLevelItems(downloadItemList);
+    ui->downloadTreeWidget->addTopLevelItems(DownloadItemList);
 
-    for(int i=0; i<downloadItemList.count(); i++)
+    for(int i=0; i<DownloadItemList.count(); i++)
     {
         QProgressBar *newProgressBar = new QProgressBar;
         newProgressBar->setValue(DownloadListStatus[i]);
         newProgressBar->setGeometry(0,0,50,3);
 
-        ui->downloadTreeWidget->setItemWidget(downloadItemList[i], 3, newProgressBar);
+        ui->downloadTreeWidget->setItemWidget(DownloadItemList[i], 3, newProgressBar);
     }
 
     ADTray->show();
@@ -180,23 +177,21 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
 
     if(!DownloadUrl.isEmpty() && !DownloadFile.isEmpty())
     {
+        DownloadIDDBList << SLDownloadList::SaveDBDownloadList(DownloadUrl, DownloadFile, DownloadSize, 0);
         DownloadListUrl << DownloadUrl;
         DownloadListFile << DownloadFile;
         DownloadListSize << DownloadSize;
-
-        qDebug()<<DownloadUrl;
+        DownloadListStatus << 0;
 
         QTreeWidgetItem *newItem = new QTreeWidgetItem();
-        newItem->setText(4, QString::number(downloadItemList.count()));
+        newItem->setText(4, QString::number(DownloadItemList.count()));
         newItem->setText(0, QUrl(DownloadUrl).fileName());
         newItem->setIcon(0, QIcon(DownloadIcon));
         newItem->setText(1, DownloadSize);
 
+        DownloadItemList << newItem;
+
         ui->downloadTreeWidget->addTopLevelItem(newItem);
-
-        qDebug()<<downloadItemList.count();
-
-        downloadItemList << newItem;
 
         QProgressBar *newProgressBar = new QProgressBar;
 
@@ -204,15 +199,11 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
 
         newProgressBar->setValue(0);
 
-        qDebug()<<downloadItemList.count();
-
         if(startDownload)
         {
             //on_actionStart_Download_triggered();
         }
     }
-
-    SLDownloadList::SaveDBDownloadList(DownloadUrl, DownloadFile, DownloadSize);
 }
 
 void DownloaderWindow::on_actionAbout_triggered()
@@ -233,7 +224,6 @@ void DownloaderWindow::on_actionStart_Download_triggered()
 {
     if(ui->downloadTreeWidget->currentIndex().row() >= 0)
     {
-
         QUrl Url;
 
         if(!DownloadListUrl[currentDownload].contains("http://") && !DownloadListUrl[currentDownload].contains("https://"))
@@ -245,7 +235,7 @@ void DownloaderWindow::on_actionStart_Download_triggered()
             Url = DownloadListUrl[currentDownload];
         }
 
-        FileDownload = new Downloader(Url, this);
+        FileDownload->start(Url, currentDownload);
 
         connect(FileDownload, SIGNAL (downloaded()), this, SLOT (Download_Completed()));
         connect(FileDownload, SIGNAL (updatedProgress()), this, SLOT (SetProgress()));
@@ -255,13 +245,20 @@ void DownloaderWindow::on_actionStart_Download_triggered()
 
 void DownloaderWindow::SetProgress()
 {
-    downloadItemList[currentDownload]->setText(2, FileDownload->getDownloadSpeed());
+    qDebug()<<FileDownload->getCDownload();
+
+    DownloadItemList[FileDownload->getCDownload()]->setText(2, FileDownload->getDownloadSpeed());
 
     QProgressBar *DLProgressBar = new QProgressBar;
 
-    ui->downloadTreeWidget->setItemWidget(downloadItemList[currentDownload], 3, DLProgressBar);
+    ui->downloadTreeWidget->setItemWidget(DownloadItemList[FileDownload->getCDownload()], 3, DLProgressBar);
 
-    qDebug()<<FileDownload->getDLTotal()/100;
+    double parsent = FileDownload->getDLTotal() / 100.0;
+
+    DownloadListStatus[FileDownload->getCDownload()] = FileDownload->getDLRead() / parsent;
+
+    SLDownloadList::UpdateDBDownloadList(DownloadIDDBList[FileDownload->getCDownload()],
+            "url", "file", "size", DownloadListStatus[FileDownload->getCDownload()]);
 
     DLProgressBar->setMaximum(FileDownload->getDLTotal());
     DLProgressBar->setValue(FileDownload->getDLRead());
@@ -269,9 +266,9 @@ void DownloaderWindow::SetProgress()
 
 void DownloaderWindow::Download_Completed()
 {
-    QFile *DownloadedFile = new QFile(DownloadListFile[currentDownload]);
+    QFile *DownloadedFile = new QFile(DownloadListFile[FileDownload->getCDownload()]);
 
-    qDebug()<<DownloadListFile[currentDownload];
+    qDebug()<<DownloadListFile[FileDownload->getCDownload()];
 
     if(DownloadedFile->open(QFile::Append))
     {
@@ -284,13 +281,13 @@ void DownloaderWindow::Download_Completed()
 void DownloaderWindow::showDownloadError()
 {
     QProgressBar *DLProgressBar = new QProgressBar;
-    ui->downloadTreeWidget->setItemWidget(downloadItemList[currentDownload], 3, DLProgressBar);
+    ui->downloadTreeWidget->setItemWidget(DownloadItemList[FileDownload->getCDownload()], 3, DLProgressBar);
     DLProgressBar->setValue(0);
 
     QMessageBox msg(this);
     msg.setIcon(QMessageBox::Warning);
     msg.setWindowTitle(tr("Can't download"));
-    msg.setText(tr("Can't download ") + DownloadListUrl[currentDownload]);
+    msg.setText(tr("Can't download ") + DownloadListUrl[FileDownload->getCDownload()]);
     msg.setInformativeText(FileDownload->getDLE());
     msg.setStandardButtons(QMessageBox::Ok);
     msg.setButtonText(QMessageBox::Ok, tr("OK"));
@@ -326,7 +323,7 @@ void DownloaderWindow::on_actionDelete_triggered()
     progress->show();
 }
 
-void DownloaderWindow::on_downloadTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void DownloaderWindow::on_downloadTreeWidget_currentItemChanged(QTreeWidgetItem *current)
 {
     currentDownload = current->data(4,0).toInt();
 }
@@ -337,4 +334,9 @@ void DownloaderWindow::on_downloadTreeWidget_itemDoubleClicked(QTreeWidgetItem *
     DLPD.showProperties(DownloadListUrl[item->data(4,0).toInt()], DownloadListFile[item->data(4,0).toInt()], item->data(1,0).toString(),
                         QString::number(5) + "%");
     DLPD.exec();
+}
+
+void DownloaderWindow::on_actionPauseResume_Download_triggered()
+{
+
 }

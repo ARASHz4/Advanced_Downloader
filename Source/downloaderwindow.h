@@ -18,6 +18,11 @@
 #include <QSystemTrayIcon>
 #include <QtSql>
 
+#if defined(Q_OS_WIN)
+#include <QWinTaskbarButton>
+#include <QWinTaskbarProgress>
+#endif
+
 namespace Ui {
 class DownloaderWindow;
 }
@@ -35,11 +40,11 @@ private:
 
     Downloader *FileDownload;
 
-    QList<QTreeWidgetItem *> downloadItemList;
+    QList<QTreeWidgetItem *> DownloadItemList;
 
     QStringList DownloadListUrl, DownloadListFile, DownloadListSize;
 
-    QList<int> DownloadListStatus;
+    QList<int> DownloadIDDBList, DownloadListStatus;
 
     int currentDownload;
 
@@ -76,9 +81,11 @@ private slots:
 
     void on_actionDelete_triggered();
 
-    void on_downloadTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void on_downloadTreeWidget_currentItemChanged(QTreeWidgetItem *current);
 
     void on_downloadTreeWidget_itemDoubleClicked(QTreeWidgetItem *item);
+
+    void on_actionPauseResume_Download_triggered();
 
 public slots:
     void Start();

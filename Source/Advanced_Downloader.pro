@@ -28,14 +28,14 @@ SOURCES += main.cpp\
     fileicon.cpp \
     filesize.cpp \
     adddownload.cpp \
+    sldownloadlist.cpp \
+    downlloadproperties.cpp \
     QSingleApp/qtlocalpeer.cpp \
     QSingleApp/qtlockedfile.cpp \
     QSingleApp/qtlockedfile_unix.cpp \
     QSingleApp/qtlockedfile_win.cpp \
     QSingleApp/qtsingleapplication.cpp \
-    QSingleApp/qtsinglecoreapplication.cpp \
-    sldownloadlist.cpp \
-    downlloadproperties.cpp
+    QSingleApp/qtsinglecoreapplication.cpp
 
 HEADERS += downloaderwindow.h \
     about.h \
@@ -45,12 +45,12 @@ HEADERS += downloaderwindow.h \
     fileicon.h \
     filesize.h \
     adddownload.h \
+    sldownloadlist.h \
+    downlloadproperties.h \
     QSingleApp/qtlocalpeer.h \
     QSingleApp/qtlockedfile.h \
     QSingleApp/qtsingleapplication.h \
-    QSingleApp/qtsinglecoreapplication.h \
-    sldownloadlist.h \
-    downlloadproperties.h
+    QSingleApp/qtsinglecoreapplication.h
 
 FORMS += downloaderwindow.ui \
     about.ui \

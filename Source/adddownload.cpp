@@ -53,7 +53,6 @@ void addDownload::on_OKEditPushButton_clicked()
             ui->addDlListPushButton->setEnabled(true);
             ui->addDlListStartPushButton->setEnabled(true);
             ui->cancelPushButton->setEnabled(true);
-
         }
     }
     else

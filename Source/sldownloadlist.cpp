@@ -1,9 +1,5 @@
 #include "sldownloadlist.h"
 
-#include <QApplication>
-#include <QtSql>
-#include <QMessageBox>
-
 QSqlDatabase SLDownloadList::DatabaseDownload = QSqlDatabase::addDatabase("QSQLITE");
 
 SLDownloadList::SLDownloadList(QObject *parent) : QObject(parent)
@@ -46,7 +42,7 @@ void SLDownloadList::CreateDBDownloadList()
     {
         QSqlQuery qry;
         qry.prepare("CREATE TABLE IF NOT EXISTS [DownloadList] ([IDDL] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,"
-                    " [DownloadAndress] VARCHAR NOT NULL, [DownloadSave] VARCHAR NOT NULL,"
+                    " [DownloadAddress] VARCHAR NOT NULL, [DownloadSave] VARCHAR NOT NULL,"
                     " [DownloadSize] VARCHAR NOT NULL, [DownloadStatus] INTEGER NOT NULL)");
 
         if(!qry.exec())
@@ -76,24 +72,24 @@ void SLDownloadList::CreateDBDownloadList()
     }
 }
 
-std::tuple<QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QList<int>> SLDownloadList::LoadDBDownloadList()
+std::tuple<QList<int>, QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QList<int>> SLDownloadList::LoadDBDownloadList()
 {
     CreateDBDownloadList();
 
-    QList<QTreeWidgetItem *> downloadItemList;
-    QStringList DownloadListUrl, DownloadListFile, DownloadListSize;
-    QList<int> DownloadListStatus;
-
     if(DatabaseDownload.isOpen())
     {
-        QSqlQuery IDDL, DownloadAndress, DownloadSave, DownloadSize, DownloadStatus;
+        QList<QTreeWidgetItem *> DownloadItemList;
+        QStringList DownloadListUrl, DownloadListFile, DownloadListSize;
+        QList<int>DownloadIDDBList, DownloadListStatus;
+
+        QSqlQuery IDDL, DownloadAddress, DownloadSave, DownloadSize, DownloadStatus;
         IDDL.prepare("SELECT IDDL FROM DownloadList");
-        DownloadAndress.prepare("SELECT DownloadAndress FROM DownloadList");
+        DownloadAddress.prepare("SELECT DownloadAddress FROM DownloadList");
         DownloadSave.prepare("SELECT DownloadSave FROM DownloadList");
         DownloadSize.prepare("SELECT DownloadSize FROM DownloadList");
         DownloadStatus.prepare("SELECT DownloadStatus FROM DownloadList");
 
-        if(IDDL.exec() && DownloadAndress.exec() && DownloadSave.exec() && DownloadSize.exec() && DownloadStatus.exec())
+        if(IDDL.exec() && DownloadAddress.exec() && DownloadSave.exec() && DownloadSize.exec() && DownloadStatus.exec())
         {
             QSqlRecord rec = IDDL.record();
 
@@ -101,7 +97,7 @@ std::tuple<QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QLis
 
             for(int r=0; IDDL.next(); r++)
             {
-                DownloadAndress.next();
+                DownloadAddress.next();
                 DownloadSave.next();
                 DownloadSize.next();
                 DownloadStatus.next();
@@ -109,11 +105,13 @@ std::tuple<QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QLis
                 for( int c=0; c<cols; c++ )
                 {
                     QString DLUrl, DLFile, DLSize;
-                    int DLStatus;
+                    int DLIDDB, DLStatus;
 
-                    if(DownloadAndress.value(c).isValid())
+                    DLIDDB = IDDL.value(c).toInt();
+
+                    if(DownloadAddress.value(c).isValid())
                     {
-                        DLUrl = DownloadAndress.value(c).toString();
+                        DLUrl = DownloadAddress.value(c).toString();
                     }
                     else
                     {
@@ -147,6 +145,7 @@ std::tuple<QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QLis
                         DLStatus = 0;
                     }
 
+                    DownloadIDDBList << DLIDDB;
                     DownloadListUrl << DLUrl;
                     DownloadListFile << DLFile;
                     DownloadListSize << DLSize;
@@ -158,7 +157,7 @@ std::tuple<QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QLis
                     newItem->setIcon(0, QIcon(QPixmap(FileIcon::getPixmap(QFileInfo(QUrl(DLUrl).fileName()).suffix(), 16))));
                     newItem->setText(1, DLSize);
 
-                    downloadItemList << newItem;
+                    DownloadItemList << newItem;
                 }
             }
         }
@@ -175,22 +174,53 @@ std::tuple<QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QLis
             msg.exec();
         }
 
-        return std::make_tuple(downloadItemList, DownloadListUrl, DownloadListFile, DownloadListSize, DownloadListStatus);
+        return std::make_tuple(DownloadIDDBList, DownloadItemList, DownloadListUrl, DownloadListFile, DownloadListSize, DownloadListStatus);
     }
 }
 
-void SLDownloadList::SaveDBDownloadList(QString DownloadUrl, QString DownloadFile, QString DownloadSize)
+int SLDownloadList::SaveDBDownloadList(QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus)
 {
-    QSqlQuery qry;
+    if(DatabaseDownload.isOpen())
+    {
+        QSqlQuery SaveQry;
 
-    qry.prepare("INSERT INTO DownloadList ([DownloadAndress], [DownloadSave], [DownloadSize], [DownloadStatus])"
-                " VALUES ('" + DownloadUrl + "', '" + DownloadFile + "', '" + DownloadSize + "', '" + DownloadSize + "')");
-    if(qry.exec())
-    {
-        qDebug("Inserted!");
+        SaveQry.prepare("INSERT INTO DownloadList ([DownloadAddress], [DownloadSave], [DownloadSize], [DownloadStatus])"
+                    " VALUES ('" + DownloadUrl + "', '" + DownloadFile + "', '" + DownloadSize + "', '" + QString::number(DownloadStatus) + "')");
+
+        if(SaveQry.exec())
+        {
+            qDebug("Inserted!");
+        }
+        else
+        {
+            qDebug()<<SaveQry.lastError();
+        }
+
+        QSqlQuery IDDLDB;
+        IDDLDB.prepare("SELECT IDDL FROM DownloadList WHERE IDDL = (SELECT MAX(IDDL) FROM DownloadList)");
+        if(IDDLDB.exec())
+        {
+            IDDLDB.next();
+
+            return IDDLDB.value(0).toInt();
+        }
+        else
+        {
+
+            qDebug()<<IDDLDB.lastError();
+        }
     }
-    else
+}
+
+void SLDownloadList::UpdateDBDownloadList(int IDDB, QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus)
+{
+    if(DatabaseDownload.isOpen())
     {
-        qDebug() << qry.lastError();
+        QSqlQuery UpdateQry;
+
+        UpdateQry.prepare("UPDATE DownloadList SET DownloadStatus = '" + QString::number(DownloadStatus)
+                          + "' WHERE IDDL = " + QString::number(IDDB));
+
+        UpdateQry.exec();
     }
 }

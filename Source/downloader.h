@@ -12,8 +12,9 @@ class Downloader : public QObject
 {
     Q_OBJECT
 public:
-    explicit Downloader(QUrl Url, QObject *parent = 0);
+    explicit Downloader(QObject *parent = 0);
     virtual ~Downloader();
+
     QByteArray downloadedData() const;
 
     qint64 getDLTotal() const;
@@ -24,7 +25,11 @@ public:
 
     QString getDLE() const;
 
+    int getCDownload() const;
+
 public slots:
+    void start(QUrl Url, int CDL);
+
     void cancelDownload();
 
 private slots:
@@ -34,8 +39,6 @@ private slots:
 
     void fileDownloaded();
 
-    void sslErrors(const QList<QSslError> &sslErrors);
-
 private:
     QNetworkAccessManager *DownloadManager;
     QNetworkReply *reply;
@@ -43,6 +46,7 @@ private:
     qint64 DLTotal, DLRead;
     QString DLE, DownloadSpeed;
     QTime DownloadTime;
+    int CDownload;
 
 signals:
     void downloaded();

@@ -4,8 +4,10 @@
 #include "fileicon.h"
 
 #include <QObject>
+#include <QApplication>
 #include <QtSql>
 #include <QTreeWidgetItem>
+#include <QMessageBox>
 
 class SLDownloadList : public QObject
 {
@@ -15,9 +17,11 @@ public:
 
     static void CreateDBDownloadList();
 
-    static std::tuple<QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QList<int> > LoadDBDownloadList();
+    static std::tuple<QList<int>, QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QList<int> > LoadDBDownloadList();
 
-    static void SaveDBDownloadList(QString DownloadUrl, QString DownloadFile, QString DownloadSize);
+    static int SaveDBDownloadList(QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus);
+
+    static void UpdateDBDownloadList(int IDDB, QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus);
 
 signals:
 
