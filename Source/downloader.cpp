@@ -2,18 +2,10 @@
 
 #include <QDebug>
 
-Downloader::Downloader(QObject *parent) : QObject(parent)
+Downloader::Downloader(QUrl Url, int CDL, QObject *parent) : QObject(parent)
 {
     DownloadManager = new QNetworkAccessManager(this);
-}
 
-Downloader::~Downloader()
-{
-
-}
-
-void Downloader::start(QUrl Url, int CDL)
-{
     reply =  DownloadManager->get(QNetworkRequest(Url));
 
     CDownload = CDL;
@@ -24,6 +16,11 @@ void Downloader::start(QUrl Url, int CDL)
     connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(updateProgress(qint64, qint64)));
     connect(reply, SIGNAL(finished()), this, SLOT (fileDownloaded()));
     connect(reply, SIGNAL(readyRead()), this, SLOT(downloadReadyRead()));
+}
+
+Downloader::~Downloader()
+{
+
 }
 
 void Downloader::error(QNetworkReply::NetworkError)

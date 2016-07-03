@@ -14,6 +14,7 @@ DownloaderWindow::DownloaderWindow(QWidget *parent) :
     ui->downloadTreeWidget->hideColumn(4);
 
     ADTray = new QSystemTrayIcon(this);
+
 }
 
 DownloaderWindow::~DownloaderWindow()
@@ -69,7 +70,8 @@ void DownloaderWindow::Start()
     ADTray->setIcon(QIcon(":/Icon/Icons/Small Icon.png"));
     ADTray->setContextMenu(TrayMenu);
 
-    std::tie(DownloadIDDBList, DownloadItemList, DownloadListUrl, DownloadListFile, DownloadListSize, DownloadListStatus) = SLDownloadList::LoadDBDownloadList();
+    std::tie(DownloadIDDBList, DownloadItemList, DownloadListUrl, DownloadListFile,
+             DownloadListSize, DownloadListStatus) = SLDownloadList::LoadDBDownloadList();
 
     ui->downloadTreeWidget->addTopLevelItems(DownloadItemList);
 
@@ -235,7 +237,7 @@ void DownloaderWindow::on_actionStart_Download_triggered()
             Url = DownloadListUrl[currentDownload];
         }
 
-        FileDownload->start(Url, currentDownload);
+        FileDownload = new Downloader(Url, currentDownload, this);
 
         connect(FileDownload, SIGNAL (downloaded()), this, SLOT (Download_Completed()));
         connect(FileDownload, SIGNAL (updatedProgress()), this, SLOT (SetProgress()));
@@ -315,12 +317,12 @@ void DownloaderWindow::on_actionExit_triggered()
 
 void DownloaderWindow::on_actionDelete_triggered()
 {
-    QWinTaskbarButton *button = new QWinTaskbarButton(this);
-    button->setWindow(this->windowHandle());
-    QWinTaskbarProgress *progress = button->progress();
-    progress->setVisible(true);
-    progress->setValue(50);
-    progress->show();
+    if(ui->downloadTreeWidget->currentIndex().row() >= 0)
+    {
+        SLDownloadList::DeleteDL(DownloadIDDBList[currentDownload]);
+
+        ui->downloadTreeWidget->takeTopLevelItem(currentDownload);
+    }
 }
 
 void DownloaderWindow::on_downloadTreeWidget_currentItemChanged(QTreeWidgetItem *current)
@@ -338,5 +340,12 @@ void DownloaderWindow::on_downloadTreeWidget_itemDoubleClicked(QTreeWidgetItem *
 
 void DownloaderWindow::on_actionPauseResume_Download_triggered()
 {
-
+#if defined(Q_OS_WIN)
+    QWinTaskbarButton *button = new QWinTaskbarButton(this);
+    button->setWindow(this->windowHandle());
+    QWinTaskbarProgress *progress = button->progress();
+    progress->setVisible(true);
+    progress->setValue(50);
+    progress->show();
+#endif
 }
