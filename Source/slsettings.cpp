@@ -2,7 +2,7 @@
 #include "slsettings.h"
 
 int SLSettings::language;
-bool SLSettings::automaticLanguage, SLSettings::minimizeToTray;
+bool SLSettings::automaticLanguage, SLSettings::minimizeToTray, SLSettings::runStartUp;
 
 SLSettings::SLSettings()
 {
@@ -22,6 +22,16 @@ bool SLSettings::MinimizeToTray()
 void SLSettings::setLanguage(int value)
 {
     language = value;
+}
+
+void SLSettings::setRunStartUp(bool value)
+{
+    runStartUp = value;
+}
+
+bool SLSettings::RunStartUp()
+{
+    return runStartUp;
 }
 
 int SLSettings::Language()
@@ -52,8 +62,59 @@ void SLSettings::LoadSettings()
         {
             SettingsAD.setValue("MinimizeToTray", "true");
         }
-
         SLSettings::setMinimizeToTray(SettingsAD.value("MinimizeToTray").toBool());
+
+        if((QString(SettingsAD.value("RunStartUp").toString()).isEmpty())
+                || (QString(SettingsAD.value("RunStartUp").toString())!="true"
+                    && QString(SettingsAD.value("RunStartUp").toString())!="false"))
+        {
+            SettingsAD.setValue("RunStartUp", "true");
+        }
+        SLSettings::setRunStartUp(SettingsAD.value("RunStartUp").toBool());
+
+        if(RunStartUp())
+        {
+            #if defined(Q_OS_WIN)
+            QSettings settingAddStartUp("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+            settingAddStartUp.setValue(QApplication::applicationName(), "\"" +
+                                       QDir::toNativeSeparators(QApplication::applicationFilePath()) + "\" " + "-start");
+            #elif defined(Q_OS_MAC)
+            QFile file(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/LaunchAgents/arashz4.advanceddownloader.plist");
+            if(file.open(QIODevice::ReadWrite))
+            {
+                QTextStream stream(&file);
+                stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                          "\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"
+                          "\n<plist version=\"1.0\">"
+                          "\n<dict>"
+                          "\n	<key>Label</key>"
+                          "\n	<string>arashz4.advanceddownloader</string>"
+                          "\n	<key>ProgramArguments</key>"
+                          "\n	<array>"
+                          "\n       <string>" + QApplication::applicationFilePath() + "</string>"
+                          "\n       <string>-start</string>"
+                          "\n   </array>"
+                          "\n   <key>RunAtLoad</key>"
+                          "\n   <true/>"
+                          "\n</dict>"
+                          "\n</plist>" << endl;
+            }
+            #elif defined(Q_OS_LINUX)
+            QFile file(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.config/autostart/AdvancedDownloader.desktop");
+
+            if(!QDir(QFileInfo(file).path()).exists())
+            {
+                QDir().mkdir(QFileInfo(file).path());
+            }
+
+            if(file.open(QIODevice::ReadWrite))
+            {
+                QTextStream stream(&file);
+                stream << "[Desktop Entry]\nType=Application\nExec=" + QApplication::applicationDirPath() + "/AdvancedDownloader.sh -start" +
+                          "\nHidden=false\nNoDisplay=false\nX-GNOME-Autostart-enabled=true\nName=Advanced Downloader" << endl;
+            }
+            #endif
+        }
     }
 
     //Language
@@ -147,6 +208,145 @@ void SLSettings::SaveSettings()
     SettingsAD.beginGroup("Option");
 
     SettingsAD.setValue("MinimizeToTray", SLSettings::MinimizeToTray());
+
+    SettingsAD.setValue("RunStartUp", SLSettings::RunStartUp());
+
+    if(RunStartUp())
+    {
+        #if defined(Q_OS_WIN)
+        QSettings settingAddStartUp("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+        settingAddStartUp.setValue(QApplication::applicationName(), "\"" +
+                                   QDir::toNativeSeparators(QApplication::applicationFilePath()) + "\" " + "-start");
+        #elif defined(Q_OS_MAC)
+        QFile file(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/LaunchAgents/arashz4.advanceddownloader.plist");
+        if(file.open(QIODevice::ReadWrite))
+        {
+            QTextStream stream(&file);
+            stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                      "\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"
+                      "\n<plist version=\"1.0\">"
+                      "\n<dict>"
+                      "\n	<key>Label</key>"
+                      "\n	<string>arashz4.advanceddownloader</string>"
+                      "\n	<key>ProgramArguments</key>"
+                      "\n	<array>"
+                      "\n       <string>" + QApplication::applicationFilePath() + "</string>"
+                      "\n       <string>-start</string>"
+                      "\n   </array>"
+                      "\n   <key>RunAtLoad</key>"
+                      "\n   <true/>"
+                      "\n</dict>"
+                      "\n</plist>" << endl;
+        }
+        else
+        {
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Warning);
+            msg.setWindowTitle(QObject::tr("Startup Error"));
+            msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
+            msg.setText(QObject::tr("Can't save to startup"));
+            msg.setButtonText(QMessageBox::Ok, QObject::tr("OK"));
+            msg.setStandardButtons(QMessageBox::Ok);
+            msg.setDefaultButton(QMessageBox::Ok);
+        }
+        #elif defined(Q_OS_LINUX)
+        QFile file(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+                   + "/.config/autostart/AdvancedDownloader.desktop");
+
+        if(!QDir(QFileInfo(file).path()).exists())
+        {
+            QDir().mkdir(QFileInfo(file).path());
+        }
+
+        if(file.open(QIODevice::ReadWrite))
+        {
+            QTextStream stream(&file);
+            stream << "[Desktop Entry]\nType=Application\nExec=" + QApplication::applicationDirPath() + "/AdvancedDownloader.sh -start"
+                      + "\nHidden=false\nNoDisplay=false\nX-GNOME-Autostart-enabled=true\nName=Advanced Downloader" << endl;
+        }
+        else
+        {
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Warning);
+            msg.setWindowTitle(QObject::tr("Startup Error"));
+            msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
+            msg.setText(QObject::tr("Can't save to startup"));
+            msg.setInformativeText(QObject::tr("Please make sure you have the correct permission in :\n")
+                                   + "~/.config/autostart/AdvancedDownloader.desktop");
+            msg.setButtonText(QMessageBox::Ok, QObject::tr("OK"));
+            msg.setStandardButtons(QMessageBox::Ok);
+            msg.setDefaultButton(QMessageBox::Ok);
+        }
+        #endif
+    }
+    else
+    {
+        #if defined(Q_OS_WIN)
+        QSettings settingDeleteStartUp("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+        settingDeleteStartUp.remove(QApplication::applicationName());
+        #elif defined(Q_OS_MAC)
+        QFile file(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/LaunchAgents/arashz4.advanceddownloader.plist");
+        if(file.open(QIODevice::ReadWrite))
+        {
+            QTextStream stream(&file);
+            stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                      "\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"
+                      "\n<plist version=\"1.0\">"
+                      "\n<dict>"
+                      "\n	<key>Label</key>"
+                      "\n	<string>arashz4.advanceddownloader</string>"
+                      "\n	<key>ProgramArguments</key>"
+                      "\n	<array>"
+                      "\n       <string>" + QApplication::applicationFilePath() + "</string>"
+                      "\n       <string>-start</string>"
+                      "\n   </array>"
+                      "\n   <key>RunAtLoad</key>"
+                      "\n   <false/>"
+                      "\n</dict>"
+                      "\n</plist>" << endl;
+        }
+        else
+        {
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Warning);
+            msg.setWindowTitle(QObject::tr("Startup Error"));
+            msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
+            msg.setText(QObject::tr("Can't save to startup"));
+            msg.setButtonText(QMessageBox::Ok, QObject::tr("OK"));
+            msg.setStandardButtons(QMessageBox::Ok);
+            msg.setDefaultButton(QMessageBox::Ok);
+        }
+        #elif defined(Q_OS_LINUX)
+        QFile file(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+                   + "/.config/autostart/AdvancedDownloader.desktop");
+
+        if(!QDir(QFileInfo(file).path()).exists())
+        {
+            QDir().mkdir(QFileInfo(file).path());
+        }
+
+        if(file.open(QIODevice::ReadWrite))
+        {
+            QTextStream stream(&file);
+            stream << "[Desktop Entry]\nType=Application\nExec=" + QApplication::applicationDirPath() + "/AdvancedDownloader.sh -start"
+                      + "\nHidden=false\nNoDisplay=false\nX-GNOME-Autostart-enabled=false\nName=Advanced Downloader" << endl;
+        }
+        else
+        {
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Warning);
+            msg.setWindowTitle(QObject::tr("Startup Error"));
+            msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
+            msg.setText(QObject::tr("Can't save to startup"));
+            msg.setInformativeText(QObject::tr("Please make sure you have the correct permission in :\n")
+                                   + "~/.config/autostart/AdvancedDownloader.desktop");
+            msg.setButtonText(QMessageBox::Ok, QObject::tr("OK"));
+            msg.setStandardButtons(QMessageBox::Ok);
+            msg.setDefaultButton(QMessageBox::Ok);
+            msg.exec();
+        }
+        #endif
+    }
 
     if(SLSettings::AutomaticLanguage())
     {

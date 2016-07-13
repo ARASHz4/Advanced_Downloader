@@ -23,6 +23,8 @@ public:
 
     static void UpdateDBDownloadList(int IDDB, QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus);
 
+    static void DeleteDL(int IDDB);
+
 signals:
 
 public slots:

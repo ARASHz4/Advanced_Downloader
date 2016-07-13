@@ -18,5 +18,6 @@
         <file>Icons/Small Icon.png</file>
         <file>Icons/SourceForge.png</file>
         <file>Icons/Start Download.png</file>
+        <file>Icons/Small Icon BW.png</file>
     </qresource>
 </RCC>

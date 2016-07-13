@@ -224,3 +224,15 @@ void SLDownloadList::UpdateDBDownloadList(int IDDB, QString DownloadUrl, QString
         UpdateQry.exec();
     }
 }
+
+void SLDownloadList::DeleteDL(int IDDB)
+{
+    if(DatabaseDownload.isOpen())
+    {
+        QSqlQuery DeleteDLQry;
+
+        DeleteDLQry.prepare("DELETE FROM DownloadList WHERE IDDL =" + QString::number(IDDB));
+
+        DeleteDLQry.exec();
+    }
+}

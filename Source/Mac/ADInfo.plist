@@ -9,7 +9,7 @@
 	<key>CFBundleShortVersionString</key>
         <string>1.0</string>
 	<key>CFBundleIdentifier</key>
-        <string>arashz4AdvancedDownloader</string>
+        <string>arashz4.advanceddownloader</string>
 	<key>CFBundleDisplayName</key>
 	<string>Advanced Downloader</string>
 	<key>CFBundleExecutable</key>

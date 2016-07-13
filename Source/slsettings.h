@@ -11,7 +11,15 @@ class SLSettings
 public:
     SLSettings();
 
+    static void setMinimizeToTray(bool value);
+
     static bool MinimizeToTray();
+
+    static void setRunStartUp(bool value);
+
+    static bool RunStartUp();
+
+    static void SaveSettings();
 
     static void LoadSettings();
 
@@ -23,10 +31,6 @@ public:
 
     static bool AutomaticLanguage();
 
-    static void setMinimizeToTray(bool value);
-
-    static void SaveSettings();
-
     static std::tuple<int, int, int, int, int, bool, bool> LoadDownloaderWindow();
 
     static void SaveDownloaderWindow(int x, int y, int w, int h, int toolBarArea, bool window_max, bool window_fuls);
@@ -36,7 +40,7 @@ public:
     static void SaveOptionWindow(int x, int y, int w, int h);
 
 private:
-    static bool automaticLanguage, minimizeToTray;
+    static bool automaticLanguage, minimizeToTray, runStartUp;
     static int language;
 };
 

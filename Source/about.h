@@ -22,9 +22,9 @@ public:
 private slots:
     void Start();
 
-    void on_OkButton_clicked();
+    void on_CloseButton_clicked();
 
-    void on_QtPushButton_clicked();
+    void on_AboutQtButton_clicked();
 
     void mouseDoubleClickEvent(QMouseEvent *);
 

@@ -12,7 +12,7 @@ class Downloader : public QObject
 {
     Q_OBJECT
 public:
-    explicit Downloader(QObject *parent = 0);
+    explicit Downloader(QUrl Url, int CDL, QObject *parent = 0);
     virtual ~Downloader();
 
     QByteArray downloadedData() const;
@@ -28,8 +28,6 @@ public:
     int getCDownload() const;
 
 public slots:
-    void start(QUrl Url, int CDL);
-
     void cancelDownload();
 
 private slots:

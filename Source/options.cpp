@@ -77,6 +77,7 @@ void Options::Load()
     //General
     {
         ui->minimizeToTrayCheckBox->setChecked(SLSettings::MinimizeToTray());
+        ui->launchStartupCheckBox->setChecked(SLSettings::RunStartUp());
     }
 
     //Language
@@ -108,6 +109,8 @@ void Options::Save()
     //General
     {
         SLSettings::setMinimizeToTray(ui->minimizeToTrayCheckBox->isChecked());
+
+        SLSettings::setRunStartUp(ui->launchStartupCheckBox->isChecked());
     }
 
     //Language
@@ -220,7 +223,15 @@ void Options::ApplyButton()
     Cancel.setText(tr("Cancel"));
     Apply.setText(tr("Apply"));
     RestoreDefaults.setText(tr("Restore Defaults"));
-    ui->OptionGroupBox->setTitle(tr("Language"));
+
+    if(ui->listWidgetOption->currentRow() == 0)
+    {
+        ui->OptionGroupBox->setTitle(tr("General"));
+    }
+    else if (ui->listWidgetOption->currentRow() == 1)
+    {
+        ui->OptionGroupBox->setTitle(tr("Language"));
+    }
 
     ui->LanguageComboBox->insertSeparator(1);
     ui->LanguageComboBox->setCurrentIndex(cl);
