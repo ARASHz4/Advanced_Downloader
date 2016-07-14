@@ -5,9 +5,16 @@
 
 #include <QObject>
 #include <QApplication>
-#include <QtSql>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QSqlRecord>
+#include <QUrl>
+#include <QDir>
 #include <QTreeWidgetItem>
 #include <QMessageBox>
+
+#include <QDebug>
 
 class SLDownloadList : public QObject
 {
@@ -15,22 +22,22 @@ class SLDownloadList : public QObject
 public:
     explicit SLDownloadList(QObject *parent = 0);
 
-    static void CreateDBDownloadList();
+    void CreateDBDownloadList();
 
-    static std::tuple<QList<int>, QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QList<int> > LoadDBDownloadList();
+    std::tuple<QList<int>, QList<QTreeWidgetItem *>, QStringList, QStringList, QStringList, QList<int> > LoadDBDownloadList();
 
-    static int SaveDBDownloadList(QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus);
+    int SaveDBDownloadList(QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus);
 
-    static void UpdateDBDownloadList(int IDDB, QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus);
+    void UpdateDBDownloadList(int IDDB, QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus);
 
-    static void DeleteDL(int IDDB);
+    void DeleteDL(int IDDB);
 
 signals:
 
 public slots:
 
 private:
-    static QSqlDatabase DatabaseDownload;
+    QSqlDatabase DatabaseDownload;
 };
 
 #endif // SLDOWNLOADLIST_H

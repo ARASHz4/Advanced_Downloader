@@ -340,7 +340,8 @@ void QtSingleApplication::StartApplication()
 
     SLSettings::LoadSettings();
 
-    SLDownloadList::CreateDBDownloadList();
+    SLDownloadList DLList;
+    DLList.CreateDBDownloadList();
 
     downloaderwindow.Start();
 

@@ -73,8 +73,9 @@ void DownloaderWindow::Start()
     #endif
     ADTray->setContextMenu(TrayMenu);
 
+    SLDownloadList DLList;
     std::tie(DownloadIDDBList, DownloadItemList, DownloadListUrl, DownloadListFile,
-             DownloadListSize, DownloadListStatus) = SLDownloadList::LoadDBDownloadList();
+             DownloadListSize, DownloadListStatus) = DLList.LoadDBDownloadList();
 
     ui->downloadTreeWidget->addTopLevelItems(DownloadItemList);
 
@@ -192,7 +193,8 @@ void DownloaderWindow::on_actionAdd_a_download_triggered()
 
     if(!DownloadUrl.isEmpty() && !DownloadFile.isEmpty())
     {
-        DownloadIDDBList << SLDownloadList::SaveDBDownloadList(DownloadUrl, DownloadFile, DownloadSize, 0);
+        SLDownloadList DLList;
+        DownloadIDDBList << DLList.SaveDBDownloadList(DownloadUrl, DownloadFile, DownloadSize, 0);
         DownloadListUrl << DownloadUrl;
         DownloadListFile << DownloadFile;
         DownloadListSize << DownloadSize;
@@ -272,7 +274,9 @@ void DownloaderWindow::SetProgress()
 
     DownloadListStatus[FileDownload->getCDownload()] = FileDownload->getDLRead() / parsent;
 
-    SLDownloadList::UpdateDBDownloadList(DownloadIDDBList[FileDownload->getCDownload()],
+    SLDownloadList DLList;
+
+    DLList.UpdateDBDownloadList(DownloadIDDBList[FileDownload->getCDownload()],
             "url", "file", "size", DownloadListStatus[FileDownload->getCDownload()]);
 
     DLProgressBar->setMaximum(FileDownload->getDLTotal());
@@ -332,7 +336,8 @@ void DownloaderWindow::on_actionDelete_triggered()
 {
     if(ui->downloadTreeWidget->currentIndex().row() >= 0)
     {
-        SLDownloadList::DeleteDL(DownloadIDDBList[currentDownload]);
+        SLDownloadList DLList;
+        DLList.DeleteDL(DownloadIDDBList[currentDownload]);
 
         ui->downloadTreeWidget->takeTopLevelItem(currentDownload);
     }

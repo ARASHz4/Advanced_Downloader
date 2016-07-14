@@ -1,10 +1,9 @@
 #include "sldownloadlist.h"
 
-QSqlDatabase SLDownloadList::DatabaseDownload = QSqlDatabase::addDatabase("QSQLITE");
-
 SLDownloadList::SLDownloadList(QObject *parent) : QObject(parent)
 {
-
+    DatabaseDownload = QSqlDatabase::addDatabase("QSQLITE");
+    DatabaseDownload.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "DownloadList.db");
 }
 
 void SLDownloadList::CreateDBDownloadList()
@@ -36,8 +35,6 @@ void SLDownloadList::CreateDBDownloadList()
         }
     }
 
-    DatabaseDownload.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "DownloadList.db");
-
     if(DatabaseDownload.open())
     {
         QSqlQuery qry;
@@ -49,10 +46,11 @@ void SLDownloadList::CreateDBDownloadList()
         {
             QMessageBox msg;
             msg.setIcon(QMessageBox::Critical);
-            msg.setWindowTitle(QApplication::applicationName() + " Error");
+            msg.setWindowTitle(QApplication::applicationName() + tr(" Error"));
             msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
-            msg.setText(QObject::tr("Can't load download list"));
+            msg.setText(tr("Can't load download list"));
             msg.setInformativeText(qry.lastError().text());
+            msg.setButtonText(QMessageBox::Ok, tr("OK"));
             msg.setStandardButtons(QMessageBox::Ok);
             msg.setDefaultButton(QMessageBox::Ok);
             msg.exec();
@@ -62,10 +60,11 @@ void SLDownloadList::CreateDBDownloadList()
     {
         QMessageBox msg;
         msg.setIcon(QMessageBox::Critical);
-        msg.setWindowTitle(QApplication::applicationName() + " Error");
+        msg.setWindowTitle(QApplication::applicationName() + tr(" Error"));
         msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
-        msg.setText(QObject::tr("Can't load download list"));
+        msg.setText(tr("Can't load download list"));
         msg.setInformativeText(DatabaseDownload.lastError().text());
+        msg.setButtonText(QMessageBox::Ok, tr("OK"));
         msg.setStandardButtons(QMessageBox::Ok);
         msg.setDefaultButton(QMessageBox::Ok);
         msg.exec();
@@ -76,7 +75,7 @@ std::tuple<QList<int>, QList<QTreeWidgetItem *>, QStringList, QStringList, QStri
 {
     CreateDBDownloadList();
 
-    if(DatabaseDownload.isOpen())
+    if(DatabaseDownload.open())
     {
         QList<QTreeWidgetItem *> DownloadItemList;
         QStringList DownloadListUrl, DownloadListFile, DownloadListSize;
@@ -164,11 +163,12 @@ std::tuple<QList<int>, QList<QTreeWidgetItem *>, QStringList, QStringList, QStri
         else
         {
             QMessageBox msg;
-            msg.setIcon(QMessageBox::Critical);
-            msg.setWindowTitle(QApplication::applicationName() + " Error");
+            msg.setIcon(QMessageBox::Warning);
+            msg.setWindowTitle(QApplication::applicationName() + tr(" Error"));
             msg.setWindowIcon(QIcon(":/Icon/Icons/Big Icon.png"));
-            msg.setText(QObject::tr("Can't load download list"));
+            msg.setText(tr("Can't load download list"));
             msg.setInformativeText(IDDL.lastError().text());
+            msg.setButtonText(QMessageBox::Ok, tr("OK"));
             msg.setStandardButtons(QMessageBox::Ok);
             msg.setDefaultButton(QMessageBox::Ok);
             msg.exec();
@@ -180,7 +180,7 @@ std::tuple<QList<int>, QList<QTreeWidgetItem *>, QStringList, QStringList, QStri
 
 int SLDownloadList::SaveDBDownloadList(QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus)
 {
-    if(DatabaseDownload.isOpen())
+    if(DatabaseDownload.open())
     {
         QSqlQuery SaveQry;
 
@@ -210,11 +210,23 @@ int SLDownloadList::SaveDBDownloadList(QString DownloadUrl, QString DownloadFile
             qDebug()<<IDDLDB.lastError();
         }
     }
+    else
+    {
+        QMessageBox msg;
+        msg.setIcon(QMessageBox::Warning);
+        msg.setWindowTitle(tr("Add download error"));
+        msg.setText(tr("Can't add download to list"));
+        msg.setInformativeText(DatabaseDownload.lastError().text());
+        msg.setButtonText(QMessageBox::Ok, tr("OK"));
+        msg.setStandardButtons(QMessageBox::Ok);
+        msg.setDefaultButton(QMessageBox::Ok);
+        msg.exec();
+    }
 }
 
 void SLDownloadList::UpdateDBDownloadList(int IDDB, QString DownloadUrl, QString DownloadFile, QString DownloadSize, int DownloadStatus)
 {
-    if(DatabaseDownload.isOpen())
+    if(DatabaseDownload.open())
     {
         QSqlQuery UpdateQry;
 
@@ -227,7 +239,7 @@ void SLDownloadList::UpdateDBDownloadList(int IDDB, QString DownloadUrl, QString
 
 void SLDownloadList::DeleteDL(int IDDB)
 {
-    if(DatabaseDownload.isOpen())
+    if(DatabaseDownload.open())
     {
         QSqlQuery DeleteDLQry;
 
