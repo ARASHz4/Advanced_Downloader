@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT += core gui network sql
-QT -= printsupport
 win32: QT += winextras
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
