@@ -13,10 +13,17 @@ TEMPLATE = app
 
 CONFIG += c++11
 
-win32: RC_FILE = Windows/ADWinRes.rc
+win32
+{
+    RC_FILE = Windows/ADWinRes.rc
+    CONFIG -= embed_manifest_exe
+}
 
-mac: QMAKE_INFO_PLIST = Mac/ADInfo.plist
-mac: ICON = Mac/ADIcon.icns
+mac
+{
+    QMAKE_INFO_PLIST = Mac/ADInfo.plist
+    ICON = Mac/ADIcon.icns
+}
 
 SOURCES += main.cpp\
     downloaderwindow.cpp \
@@ -67,4 +74,6 @@ DISTFILES += \
     Mac/ADIcon.icns \
     Windows/ADIcon.ico \
     Windows/ADWinRes.rc \
-    Windows/ADWinDetails.h
+    Windows/ADWinDetails.h \
+    "Windows/Advanced Downloader.exe.manifest" \
+    ADT

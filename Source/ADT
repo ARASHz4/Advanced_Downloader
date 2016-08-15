@@ -1,14 +1,15 @@
-SOURCES += downloaderwindow.cpp \
-    about.cpp \
-    options.cpp \
-    downloader.cpp \
-    filesize.cpp \
+SOURCES += about.cpp \
     adddownload.cpp \
-	downlloadproperties.cpp
+    downlloadproperties.cpp \
+    downloader.cpp \
+    downloaderwindow.cpp \
+    filesize.cpp \
+    options.cpp \
+    sldownloadlist.cpp \
+    slsettings.cpp
 
-FORMS += downloaderwindow.ui \
-    about.ui \
+FORMS += about.ui \
     adddownload.ui \
-    options.ui \
-    downlloadproperties.ui
-	
+    downlloadproperties.ui \
+    downloaderwindow.ui \
+    options.ui

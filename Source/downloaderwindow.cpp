@@ -10,8 +10,6 @@ DownloaderWindow::DownloaderWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->downloadTreeWidget->hideColumn(4);
-
     ADTray = new QSystemTrayIcon(this);
 
 }
@@ -83,10 +81,11 @@ void DownloaderWindow::Start()
     {
         QProgressBar *newProgressBar = new QProgressBar;
         newProgressBar->setValue(DownloadListStatus[i]);
-        newProgressBar->setGeometry(0,0,50,3);
 
         ui->downloadTreeWidget->setItemWidget(DownloadItemList[i], 3, newProgressBar);
     }
+
+    ui->downloadTreeWidget->hideColumn(4);
 
     ADTray->show();
 
@@ -339,13 +338,30 @@ void DownloaderWindow::on_actionDelete_triggered()
         SLDownloadList DLList;
         DLList.DeleteDL(DownloadIDDBList[currentDownload]);
 
-        ui->downloadTreeWidget->takeTopLevelItem(currentDownload);
+        DownloadIDDBList.removeAt(currentDownload);
+        DownloadItemList.removeAt(currentDownload);
+        DownloadListUrl.removeAt(currentDownload);
+        DownloadListFile.removeAt(currentDownload);
+        DownloadListSize.removeAt(currentDownload);
+        DownloadListStatus.removeAt(currentDownload);
+
+        if(ui->downloadTreeWidget->topLevelItemCount())
+        {
+            ui->downloadTreeWidget->takeTopLevelItem(ui->downloadTreeWidget->currentIndex().row());
+        }
     }
 }
 
 void DownloaderWindow::on_downloadTreeWidget_currentItemChanged(QTreeWidgetItem *current)
 {
-    currentDownload = current->data(4,0).toInt();
+    if(ui->downloadTreeWidget->currentIndex().row() >= 0)
+    {
+        currentDownload = current->data(4,0).toInt();
+    }
+    else
+    {
+        currentDownload = -1;
+    }
 }
 
 void DownloaderWindow::on_downloadTreeWidget_itemDoubleClicked(QTreeWidgetItem *item)
@@ -366,4 +382,10 @@ void DownloaderWindow::on_actionPauseResume_Download_triggered()
     progress->setValue(50);
     progress->show();
 #endif
+
+    if(ui->downloadTreeWidget->topLevelItemCount())
+    {
+        ui->downloadTreeWidget->takeTopLevelItem(ui->downloadTreeWidget->currentIndex().row());
+        qDebug()<<"ok2";
+    }
 }
